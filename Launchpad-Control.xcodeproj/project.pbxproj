@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
+		7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */; };
+		7D5DAA6413E1E9D800483A2F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6213E1E9D800483A2F /* InfoPlist.strings */; };
+		7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */; };
+		7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */; };
+		7D5DAA6B13E1E9D800483A2F /* Launchpad_Control.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6A13E1E9D800483A2F /* Launchpad_Control.tiff */; };
+		7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D5DAA5713E1E9D800483A2F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
+		7D5DAA5C13E1E9D800483A2F /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		7D5DAA5D13E1E9D800483A2F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		7D5DAA5E13E1E9D800483A2F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		7D5DAA6113E1E9D800483A2F /* Launchpad-Control-Info.plist */ = {isa = PBXFileReference; path = "Launchpad-Control-Info.plist"; sourceTree = "<group>"; };
+		7D5DAA6313E1E9D800483A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7D5DAA6513E1E9D800483A2F /* Launchpad-Control-Prefix.pch */ = {isa = PBXFileReference; path = "Launchpad-Control-Prefix.pch"; sourceTree = "<group>"; };
+		7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Launchpad_Control.h; sourceTree = "<group>"; };
+		7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Launchpad_Control.m; sourceTree = "<group>"; };
+		7D5DAA6A13E1E9D800483A2F /* Launchpad_Control.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Launchpad_Control.tiff; sourceTree = "<group>"; };
+		7D5DAA6D13E1E9D800483A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Launchpad_Control.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7D5DAA4F13E1E9D800483A2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */,
+				7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7D5DAA4713E1E9D700483A2F = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */,
+				7D5DAA5613E1E9D800483A2F /* Frameworks */,
+				7D5DAA5513E1E9D800483A2F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7D5DAA5513E1E9D800483A2F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7D5DAA5613E1E9D800483A2F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA5713E1E9D800483A2F /* Cocoa.framework */,
+				7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */,
+				7D5DAA5B13E1E9D800483A2F /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7D5DAA5B13E1E9D800483A2F /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA5C13E1E9D800483A2F /* AppKit.framework */,
+				7D5DAA5D13E1E9D800483A2F /* CoreData.framework */,
+				7D5DAA5E13E1E9D800483A2F /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */ = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */,
+				7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */,
+				7D5DAA6A13E1E9D800483A2F /* Launchpad_Control.tiff */,
+				7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */,
+				7D5DAA6013E1E9D800483A2F /* Supporting Files */,
+			);
+			path = "Launchpad-Control";
+			sourceTree = "<group>";
+		};
+		7D5DAA6013E1E9D800483A2F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7D5DAA6113E1E9D800483A2F /* Launchpad-Control-Info.plist */,
+				7D5DAA6213E1E9D800483A2F /* InfoPlist.strings */,
+				7D5DAA6513E1E9D800483A2F /* Launchpad-Control-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7D5DAA5013E1E9D800483A2F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		7D5DAA5313E1E9D800483A2F /* Launchpad-Control */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D5DAA7113E1E9D800483A2F /* Build configuration list for PBXNativeTarget "Launchpad-Control" */;
+			buildPhases = (
+				7D5DAA4E13E1E9D800483A2F /* Sources */,
+				7D5DAA4F13E1E9D800483A2F /* Frameworks */,
+				7D5DAA5013E1E9D800483A2F /* Headers */,
+				7D5DAA5113E1E9D800483A2F /* Resources */,
+				7D5DAA5213E1E9D800483A2F /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Launchpad-Control";
+			productName = "Launchpad-Control";
+			productReference = 7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7D5DAA4913E1E9D800483A2F /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 7D5DAA4C13E1E9D800483A2F /* Build configuration list for PBXProject "Launchpad-Control" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7D5DAA4713E1E9D700483A2F;
+			productRefGroup = 7D5DAA5513E1E9D800483A2F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7D5DAA5313E1E9D800483A2F /* Launchpad-Control */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7D5DAA5113E1E9D800483A2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5DAA6413E1E9D800483A2F /* InfoPlist.strings in Resources */,
+				7D5DAA6B13E1E9D800483A2F /* Launchpad_Control.tiff in Resources */,
+				7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		7D5DAA5213E1E9D800483A2F /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7D5DAA4E13E1E9D800483A2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7D5DAA6213E1E9D800483A2F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D5DAA6313E1E9D800483A2F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7D5DAA6D13E1E9D800483A2F /* en */,
+			);
+			name = Launchpad_Control.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7D5DAA6F13E1E9D800483A2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		7D5DAA7013E1E9D800483A2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7D5DAA7213E1E9D800483A2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Launchpad-Control/Launchpad-Control-Prefix.pch";
+				INFOPLIST_FILE = "Launchpad-Control/Launchpad-Control-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = prefPane;
+			};
+			name = Debug;
+		};
+		7D5DAA7313E1E9D800483A2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Launchpad-Control/Launchpad-Control-Prefix.pch";
+				INFOPLIST_FILE = "Launchpad-Control/Launchpad-Control-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = prefPane;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7D5DAA4C13E1E9D800483A2F /* Build configuration list for PBXProject "Launchpad-Control" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5DAA6F13E1E9D800483A2F /* Debug */,
+				7D5DAA7013E1E9D800483A2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7D5DAA7113E1E9D800483A2F /* Build configuration list for PBXNativeTarget "Launchpad-Control" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D5DAA7213E1E9D800483A2F /* Debug */,
+				7D5DAA7313E1E9D800483A2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7D5DAA4913E1E9D800483A2F /* Project object */;
+}
