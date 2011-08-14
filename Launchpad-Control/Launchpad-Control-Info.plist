@@ -23,13 +23,13 @@
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2011 __MyCompanyName__. All rights reserved.</string>
+	<string>Copyright © 2011 Andreas Ganske. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>Launchpad_Control</string>
 	<key>NSPrefPaneIconFile</key>
-	<string>Launchpad_Control.tiff</string>
+	<string>Icon.icns</string>
 	<key>NSPrefPaneIconLabel</key>
-	<string>Launchpad-Control</string>
+	<string>Launchpad</string>
 	<key>NSPrincipalClass</key>
 	<string>Launchpad_Control</string>
 </dict>
