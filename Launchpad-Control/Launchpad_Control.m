@@ -7,52 +7,153 @@
 //
 
 #import "Launchpad_Control.h"
-#import "App.h"
 
 enum kItemType {
-	kItemApp = 1,
-	kItemGroup = 2
+	kItemRoot = 1,
+	kItemGroup = 2,
+	kItemPage = 3,
+	kItemApp = 4
 };
 
 @implementation Launchpad_Control
 
-@synthesize tableView, donateButton, checkForUpdatesButton, showAllButton, hideAllButton, fullResetButton, applyButton;
+#define currentVersion @"1.4"
+
+@synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField;
 
 - (void)mainViewDidLoad
 {
-	apps = [[NSMutableArray alloc] init];
+	[currentVersionField setTitle:[NSString stringWithFormat:@"v%@",currentVersion]];
+	
+	items = [[NSMutableArray alloc] init];
+	
+	[self openDatabase];
+	
 	[self reload];
+	
+	[self performSelector:@selector(checkForUpdates) withObject:nil afterDelay:3.0f];
 }
 
--(NSInteger)numberOfRowsInTableView:(NSTableView *)tableView;
+-(void)checkForUpdates
 {
-    return [apps count];
+	NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://chaosspace.de/server/launchpad-control/version"]
+											  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+										  timeoutInterval:60.0];
+	// create the connection with the request
+	// and start loading the data
+	NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
+	if (theConnection) {
+		// Create the NSMutableData to hold the received data.
+		// receivedData is an instance variable declared elsewhere.
+		receivedData = [[NSMutableData data] retain];
+	} else {
+		// Inform the user that the connection failed.
+	}
 }
 
-- (NSCell *)tableView:(NSTableView *)tableView dataCellForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-	NSButtonCell *cell=[[NSButtonCell alloc] init];
-	[cell setButtonType:NSSwitchButton];
-	App *app = [apps objectAtIndex:row];
-	NSString *appPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:[app bundleID]];
-	[cell setTitle:[[app name] stringByAppendingFormat:@" (%@)",appPath]];
+    [receivedData appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	NSString *newVersionString = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
+	
+	if ([newVersionString floatValue] > [currentVersion floatValue]) {
+		[updateButton setTitle:[NSString stringWithFormat:@"Get v%@ now!",newVersionString]];
+		[updateButton setHidden:NO];
+		
+		if ([[NSAlert alertWithMessageText:@"New version of Launchpad-Control available!" 
+							 defaultButton:@"Download" 
+						   alternateButton:@"Later" 
+							   otherButton:nil 
+				 informativeTextWithFormat:[NSString stringWithFormat:@"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.",newVersionString,currentVersion]] runModal])
+		{
+			[self buttonPressed:updateButton];
+		}
+	}
+	
+    [connection release];
+    [receivedData release];
+}
+
+-(BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
+{
+	return [[item children] count]>0;
+}
+
+-(NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
+    return item==nil ? [[rootItem children] count] : [[item children] count];
+}
+
+-(id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+	return item==nil ? [[rootItem children] objectAtIndex:index] : [[(Item *)item children] objectAtIndex:index];
+}
+
+-(BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
+	return [[item children] count]>0;
+}
+
+-(NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+	NSCell *cell;
+	switch ([(Item *)item type]) 
+	{
+		case kItemRoot:
+		{
+			cell = [[NSCell alloc] initTextCell:[item name]];
+			
+			break;
+		}
+			
+		case kItemGroup:
+		case kItemPage: 
+		case kItemApp:
+		{
+			cell = [[NSButtonCell alloc] init];
+			[(NSButtonCell *)cell setButtonType:NSSwitchButton];
+			[cell setTitle:[item description]];
+			
+			break;
+		}
+	}
+	
 	return cell;
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-	BOOL value = [(App *)[apps objectAtIndex:row] newIdentifier] >= 0;
-	return [NSNumber numberWithInteger:(value ? NSOnState : NSOffState)];
+-(id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item 
+{
+	switch ([(Item *)item type]) {
+		case kItemRoot:
+			return [item name];
+			break;
+			
+		case kItemGroup:
+		case kItemPage:
+		case kItemApp:
+			return [NSNumber numberWithInteger:([(Item *)item visible] ? NSOnState : NSOffState)];
+			break;
+	}
+	return nil;
 }
 
-- (void)tableView:(NSTableView *)tableView setObjectValue:(id)value forTableColumn:(NSTableColumn *)column row:(NSInteger)row 
+-(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	App *app = (App *)[apps objectAtIndex:row];
+	[self setVisible:[object boolValue] forItem:(Item *)item];
+	[tableView reloadItem:item reloadChildren:YES];
+}
+
+-(void)setVisible:(BOOL)visible forItem:(Item *)item
+{
+	changedData = YES;
+	[item setVisible:visible];
 	
-	if ([value boolValue]) 
-	{
-		[app setNewIdentifier:labs([app identifier])];
-	} else {
-		[app setNewIdentifier:-labs([app identifier])];
+	for (Item *child in [item children]) {
+		[self setVisible:visible forItem:child];
 	}
 }
 
@@ -90,6 +191,11 @@ enum kItemType {
 					if(sqlite3_open([databasePath UTF8String], &db) == SQLITE_OK)
 					{
 						dbOpened = YES;
+						if (![[self getDatabaseVersion] isEqualToString:currentVersion]) {
+							[self dropTriggers];
+							[self createTriggers];
+							[self setDatabaseVersion];
+						}
 						return YES;
 					}
 				}
@@ -106,47 +212,120 @@ enum kItemType {
 	}
 }
 
--(BOOL)removeDuplicates
-{
-	return NO;
-	
-	if (!dbOpened)
-		return NO;
-	
-	NSString *sqlString = [NSString stringWithFormat:@"SELECT bad_rows.item_id FROM apps AS good_rows INNER JOIN apps AS bad_rows ON bad_rows.bundleid=good_rows.bundleid AND bad_rows.item_id>good_rows.item_id;"];
-	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_stmt *statement;
-	
-	if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
-	{
-		while(sqlite3_step(statement) == SQLITE_ROW) 
-		{
-			NSString *deleteSQLString = [NSString stringWithFormat:@"DELETE FROM apps WHERE item_id=%i",sqlite3_column_int(statement, 0)];
-			const char *deleteSQL = [deleteSQLString cStringUsingEncoding:NSUTF8StringEncoding];
-			sqlite3_exec(db, deleteSQL, NULL, NULL, NULL);
-		}
-	}
-	sqlite3_finalize(statement);
-	
-	return YES;
-}
-
--(BOOL)fetchApplications
+-(BOOL)fetchItems
 {
 	if(!dbOpened)
 		return NO;
 	
-	NSString *sqlString = [NSString stringWithFormat:@"SELECT item_id,title,bundleid FROM apps"];
+	if (items)
+		[items removeAllObjects];
+	
+	NSString *sqlString = [NSString stringWithFormat:@"\
+						   SELECT rowid,parent_id,uuid,flags,type,ordering,apps.title,groups.title,apps.bundleid \
+						   FROM items \
+						   LEFT JOIN apps ON rowid = apps.item_id \
+						   LEFT JOIN groups ON rowid = groups.item_id \
+						   ORDER BY ABS(parent_id),ordering;"];
 	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
 	sqlite3_stmt *statement;
 	
 	if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
 	{
+		NSInteger pageCount = 0;
+		
 		while(sqlite3_step(statement) == SQLITE_ROW) 
 		{
-			App *app = [[App alloc] initWithIdentifier:sqlite3_column_int(statement, 0) andName:[NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 1)] andBundleID:[NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 2)] type:kItemApp];
-			[apps addObject:app];
-			[app release];
+			NSInteger rowid = sqlite3_column_int(statement, 0);
+			NSInteger parent_id = sqlite3_column_int(statement, 1);
+			NSString *uuid = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 2)];
+			NSInteger flags = sqlite3_column_int(statement, 3);
+			NSInteger type = sqlite3_column_int(statement, 4);
+			NSInteger ordering = sqlite3_column_int(statement, 5);
+			
+			NSString *name = nil;
+			NSString *bundleID = nil;
+			
+			switch (type) {
+				case kItemRoot:
+					name = @"ROOT";
+					break;
+				
+				case kItemGroup:
+					if (sqlite3_column_text(statement, 7))
+						name = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 7)];
+					else
+						name = uuid;
+					break;
+					
+				case kItemPage:
+					if ([uuid isEqualToString:@"HOLDINGPAGE"])
+						continue;
+					else
+						name = [NSString stringWithFormat:@"PAGE %i",++pageCount];
+					break;
+					
+				case kItemApp:
+					if (sqlite3_column_text(statement, 6)) {
+						name = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 6)];
+						bundleID = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 8)];
+					}else{
+						name = uuid;
+					}
+					
+					break;
+					
+				default:
+					continue;
+					break;
+			}
+			
+			Item *parent = nil;
+			
+			if (parent_id != 0) {
+				for (Item *otherItem in items) {
+					if ([otherItem identifier] == labs(parent_id) ) {
+						parent = otherItem;
+						break;
+					}
+				}
+				if (!parent) {
+					parent = [[Item alloc] initWithID:parent_id name:nil parent:nil uuid:nil flags:0 type:2 ordering:0 visible:YES];
+					[items addObject:parent];
+				}
+			}
+			
+			Item *item = nil;
+			for (Item *otherItem in items) {
+				if ([otherItem identifier] == labs(rowid) ) {
+					item = otherItem;
+				}
+			}
+			
+			if (!item) {
+				item = [[Item alloc] initWithID:rowid
+										   name:name
+										 parent:parent 
+										   uuid:uuid 
+										  flags:flags
+										   type:type 
+									   ordering:ordering
+										visible:parent_id>0];
+			}else{
+				[item setName:name];
+				[item setParent:parent];
+				[item setUuid:uuid];
+				[item setFlags:flags];
+				[item setType:type];
+				[item setOrdering:ordering];
+				[item setVisible:parent_id>0];
+			}
+			
+			[item setBundleIdentifier:bundleID];
+	
+			[items addObject:item];
+			
+			if (rowid == 1)
+				rootItem = item;
 		}
 	}
 	sqlite3_finalize(statement);
@@ -154,85 +333,60 @@ enum kItemType {
 	return YES;
 }
 
--(BOOL)fetchGroups
+-(void)checkDatabase
 {
-	if(!dbOpened)
-		return NO;
-	
-	NSString *sqlString = [NSString stringWithFormat:@"SELECT item_id,title FROM groups"];
+	NSString *sqlString = [NSString stringWithFormat:@"SELECT COUNT(item_id) FROM apps WHERE item_id<0;"];
 	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
 	sqlite3_stmt *statement;
 	
 	if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
 	{
-		while(sqlite3_step(statement) == SQLITE_ROW) 
-		{
-			@try {
-				App *app = [[App alloc] initWithIdentifier:sqlite3_column_int(statement, 0) andName:[NSString stringWithFormat:@"Group: %@",[NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 1)]] type:kItemGroup];
-				[apps addObject:app];
-				[app release];
-			}
-			@catch (NSException *exception) {
+		if(sqlite3_step(statement) == SQLITE_ROW){
+			if (sqlite3_column_int(statement, 0)>0) {
+				[self databaseIsCorrupt];
 			}
 		}
 	}
 	sqlite3_finalize(statement);
-	
-	return YES;
-}
-
--(void)sortApps
-{
-	NSSortDescriptor *typeDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"type" ascending:NO] autorelease];
-	NSSortDescriptor *nameDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-	NSArray *sortDescriptors = [NSArray arrayWithObjects:typeDescriptor,nameDescriptor,nil];
-	[apps sortUsingDescriptors:sortDescriptors];
 }
 
 -(IBAction)buttonPressed:(id)sender
 {
-	if (sender == checkForUpdatesButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control"]];
+	if (sender == updateButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
+	}else if (sender == refreshButton) {
+		[self refreshDatabase];
 	}else if (sender == applyButton) {
 		[self applySettings];
-	}else if (sender == showAllButton) {
-		[self showAll];
-		[tableView reloadData];
-	}else if (sender == hideAllButton) {
-		[self hideAll];
-		[tableView reloadData];
-	}else if (sender == fullResetButton) {
+	}else if (sender == resetButton) {
 		[self removeDatabase];
 	}else if (sender == donateButton) {
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
+	}else if (sender == tweetButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"]];
 	}
 }
 
 -(void)applySettings
 {
-	for (App *app in apps) {
-		NSString *table;
-		switch ([app type]) {
-			case kItemApp:
-				table = @"apps";
-				break;
-				
-			case kItemGroup:
-				table = @"groups";
-				break;
-		}
+	changedData = NO;
+	for (Item *item in items) {
+		if (item == rootItem)
+			continue;
 		
-		NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET item_id = %i WHERE item_id = %i", table, [app newIdentifier],[app identifier]];
+		NSString *sqlString = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE rowid = %i;", [[item parent] identifier] * ([item visible] ? 1 : -1),[item identifier]];
 		const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
 		
+		sqlite3_exec(db, sql, NULL, NULL, NULL);
+		
+		/*
 		sqlite3_stmt *statement;
 		if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
 		{
 			sqlite3_step(statement);
 			sqlite3_finalize(statement);
 		}
-		
-		[app setIdentifier:[app newIdentifier]];
+		 */
 	}
 	[self restartDock];
 }
@@ -248,13 +402,171 @@ enum kItemType {
 						 defaultButton:@"Yes" 
 					   alternateButton:@"No" 
 						   otherButton:nil 
-			 informativeTextWithFormat:@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom changes (custom groups, etc.) will be gone."] runModal])
+			 informativeTextWithFormat:@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone."] runModal])
 	{
 		[self closeDatabase];
 		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
+		
+		if ([[NSAlert alertWithMessageText:@"Do you want Launchpad-Control to load the new database?" 
+						defaultButton:@"Yes" 
+					  alternateButton:@"No" 
+						  otherButton:nil 
+				 informativeTextWithFormat:@"If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself."] runModal]) 
+		{
+			while (![self openDatabase]) {
+				if ([[NSAlert alertWithMessageText:@"Could not find any database." 
+									 defaultButton:@"Refresh" 
+								   alternateButton:@"Quit" 
+									   otherButton:nil 
+						 informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'."] runModal]) {
+				}else{
+					[[NSApplication sharedApplication] terminate:self];
+				}
+			}
+			[self reload];
+		}else{
+			[[NSApplication sharedApplication] terminate:self];
+		}
+	}
+}
+
+-(NSString *)getDatabaseVersion
+{ 
+	NSString *sqlString = @"SELECT value FROM dbinfo WHERE key='launchpad-control' LIMIT 1;";
+	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_stmt *statement;
+	
+	NSString *version = @"";
+	
+	if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
+	{
+		sqlite3_step(statement);
+		
+		if (sqlite3_column_text(statement, 0)) {
+			version = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 0)];
+		}
+		
+		sqlite3_finalize(statement);
+	}
+	
+	return version;
+}
+
+-(void)setDatabaseVersion
+{
+	NSString *sqlString;
+	if ([[self getDatabaseVersion] isEqualToString:@""]) {
+		sqlString = [NSString stringWithFormat:@"INSERT INTO `dbinfo` VALUES ('launchpad-control','%@')",currentVersion];
+	}else{
+		sqlString = [NSString stringWithFormat:@"UPDATE dbinfo SET value='%@' WHERE key='launchpad-control'",currentVersion];
+	}
+	
+	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+}
+
+-(void)dropTriggers
+{
+	NSString *sqlString = [NSString stringWithFormat:@"DROP TRIGGER insert_item; DROP TRIGGER item_deleted; DROP TRIGGER update_item_parent; DROP TRIGGER update_items_order; DROP TRIGGER update_items_order_backwards;"];
+	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+}
+	
+-(void)createTriggers
+{
+	NSString *sqlString = [NSString stringWithFormat:@"CREATE TRIGGER insert_item AFTER INSERT on items WHEN 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
+BEGIN \n\
+UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
+UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE ABS(parent_id)=ABS(new.parent_id)) WHERE ROWID=new.rowid; \n\
+UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
+END; \n\
+\n\
+CREATE TRIGGER item_deleted AFTER DELETE ON items \n\
+BEGIN \n\
+DELETE FROM apps WHERE rowid=old.rowid; \n\
+DELETE FROM groups WHERE item_id=old.rowid; \n\
+DELETE FROM downloading_apps WHERE item_id=old.rowid; \n\
+UPDATE items SET ordering = ordering - 1 WHERE ABS(old.parent_id) = ABS(parent_id) AND ordering > old.ordering; \n\
+END; \n\
+\n\
+CREATE TRIGGER update_item_parent AFTER UPDATE OF parent_id ON items \n\
+BEGIN \n\
+UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
+UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE ABS(parent_id)=ABS(new.parent_id) AND ROWID!=old.rowid) WHERE ROWID=old.rowid; \n\
+UPDATE items SET ordering = ordering - 1 WHERE ABS(parent_id) = ABS(old.parent_id) and ordering > old.ordering; \n\
+UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
+END; \n\
+\n\
+CREATE TRIGGER update_items_order BEFORE UPDATE OF ordering ON items WHEN new.ordering > old.ordering AND 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
+BEGIN \n\
+UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
+UPDATE items SET ordering = ordering - 1 WHERE ABS(parent_id) = ABS(old.parent_id) AND ordering BETWEEN old.ordering and new.ordering; \n\
+UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
+END; \n\
+\n\
+CREATE TRIGGER update_items_order_backwards BEFORE UPDATE OF ordering ON items WHEN new.ordering < old.ordering AND 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
+BEGIN \n\
+UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
+UPDATE items SET ordering = ordering + 1 WHERE ABS(parent_id) = ABS(old.parent_id) AND ordering BETWEEN new.ordering and old.ordering; \n\
+UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
+END;"];
+	
+	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);	
+}
+
+-(void)databaseIsCorrupt
+{
+	if ([[NSAlert alertWithMessageText:@"Corrupt database detected!" 
+						 defaultButton:@"Okay" 
+					   alternateButton:@"Cancel" 
+						   otherButton:nil 
+			 informativeTextWithFormat:@"Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."] runModal])
+	{
+		[self closeDatabase];
+		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
+		[self restartDock];
+		system("open /Applications/Launchpad.app");
+		
+		[[NSAlert alertWithMessageText:@"Refreshing database..." 
+						defaultButton:@"Okay" 
+					  alternateButton:nil 
+						  otherButton:nil 
+			informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database."] runModal];
+		
+		while (![self openDatabase]) {
+			if ([[NSAlert alertWithMessageText:@"Could not find any database." 
+								 defaultButton:@"Refresh" 
+							   alternateButton:@"Quit" 
+								   otherButton:nil 
+					 informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'."] runModal]) {
+			}else{
+				[[NSApplication sharedApplication] terminate:self];
+			}
+		}
+		[self reload];
+	}else{
 		[[NSApplication sharedApplication] terminate:self];
+	}
+}
+
+-(void)refreshDatabase
+{
+	if (changedData) {
+		if ([[NSAlert alertWithMessageText:@"Unsaved changes!" 
+							 defaultButton:@"Apply" 
+						   alternateButton:@"Refresh" 
+							   otherButton:nil 
+				 informativeTextWithFormat:@"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"] runModal])
+		{
+			[self applySettings];
+		}else{
+			[self reload];
+		}
+	}else{
+		[self reload];
 	}
 }
 
@@ -266,29 +578,15 @@ enum kItemType {
 
 -(void)reload
 {
-	if (dbOpened)
-		[self closeDatabase];
-	
-	[self openDatabase];
-	[self removeDuplicates];
-	[self fetchApplications];
-	[self fetchGroups];
-	[self sortApps];
+	[self checkDatabase];
+	[self fetchItems];
 	[tableView reloadData];
-}
-
--(void)showAll
-{
-	for (App *app in apps) {
-		[app setNewIdentifier:labs([app identifier])];
+	
+	for (Item *child in [rootItem children]) {
+		[tableView expandItem:child expandChildren:NO];
 	}
-}
-
--(void)hideAll
-{
-	for (App *app in apps) {
-		[app setNewIdentifier:-labs([app identifier])];
-	}
+	
+	changedData = NO;
 }
 
 @end

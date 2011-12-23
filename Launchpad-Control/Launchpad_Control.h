@@ -8,27 +8,33 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 #import <sqlite3.h>
+#import "Item.h"
 
-@interface Launchpad_Control : NSPreferencePane <NSTableViewDataSource> {
+@interface Launchpad_Control : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate> {
 	NSString *databasePath;
 	NSString *databaseBackupPath;
 	
-	NSTableView *tableView;
+	NSOutlineView *tableView;
 	
-	NSButton *checkForUpdatesButton;
+	NSButton *updateButton;
 	NSButton *donateButton;
+	NSButton *tweetButton;
 	
-	NSButton *showAllButton;
-	NSButton *hideAllButton;
-	
-	NSButton *fullResetButton;
+	NSButton *refreshButton;
+	NSButton *resetButton;
 	
 	NSButton *applyButton;
 	
-    NSMutableArray *apps;
+	NSTextFieldCell *currentVersionField;
+	
+	Item *rootItem;
+    NSMutableArray *items;
 	
 	sqlite3 *db;
 	BOOL dbOpened;
+	BOOL changedData;
+	
+	NSMutableData *receivedData;
 }
 
 - (void)mainViewDidLoad;
@@ -38,28 +44,36 @@
 -(BOOL)openDatabase;
 -(void)closeDatabase;
 
--(BOOL)fetchApplications;
--(BOOL)fetchGroups;
--(void)sortApps;
+-(BOOL)fetchItems;
+-(void)setVisible:(BOOL)visible forItem:(Item *)item;
 
 -(void)applySettings;
 -(void)restartDock;
 
+-(void)refreshDatabase;
 -(void)removeDatabase;
 
--(void)showAll;
--(void)hideAll;
+-(void)setDatabaseVersion;
+-(NSString *)getDatabaseVersion;
 
-@property (assign) IBOutlet NSTableView *tableView;
+-(void)databaseIsCorrupt;
 
-@property (assign) IBOutlet NSButton *checkForUpdatesButton;
+-(void)dropTriggers;
+-(void)createTriggers;
+
+-(IBAction)buttonPressed:(id)sender;
+
+@property (assign) IBOutlet NSOutlineView *tableView;
+
+@property (assign) IBOutlet NSButton *updateButton;
 @property (assign) IBOutlet NSButton *donateButton;
+@property (assign) IBOutlet NSButton *tweetButton;
 
-@property (assign) IBOutlet NSButton *showAllButton;
-@property (assign) IBOutlet NSButton *hideAllButton;
+@property (assign) IBOutlet NSButton *resetButton;
 
-@property (assign) IBOutlet NSButton *fullResetButton;
-
+@property (assign) IBOutlet NSButton *refreshButton;
 @property (assign) IBOutlet NSButton *applyButton;
+
+@property (assign) IBOutlet NSTextFieldCell *currentVersionField;
 
 @end

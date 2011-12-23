@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7D0D236013F6D10400A2A1FE /* btn_donate_SM.gif in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D235E13F6D10400A2A1FE /* btn_donate_SM.gif */; };
+		7D0BCE0E13FC50CC00545108 /* Item.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D0BCE0C13FC50CC00545108 /* Item.h */; };
+		7D0BCE0F13FC50CC00545108 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0BCE0D13FC50CC00545108 /* Item.m */; };
 		7D0D236113F6D10400A2A1FE /* donate.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D235F13F6D10400A2A1FE /* donate.png */; };
 		7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D236213F6F5BB00A2A1FE /* Icon.icns */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
@@ -16,12 +17,12 @@
 		7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */; };
 		7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */; };
 		7D5DAA7813E1EB4500483A2F /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */; };
-		7D5DAA7B13E1EB6B00483A2F /* App.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA7913E1EB6B00483A2F /* App.h */; };
-		7D5DAA7C13E1EB6B00483A2F /* App.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA7A13E1EB6B00483A2F /* App.m */; };
+		7D63FBCC14A4887400518DD2 /* 48.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D63FBCB14A4887400518DD2 /* 48.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7D0D235E13F6D10400A2A1FE /* btn_donate_SM.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = btn_donate_SM.gif; sourceTree = "<group>"; };
+		7D0BCE0C13FC50CC00545108 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
+		7D0BCE0D13FC50CC00545108 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		7D0D235F13F6D10400A2A1FE /* donate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = donate.png; sourceTree = "<group>"; };
 		7D0D236213F6F5BB00A2A1FE /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Icon.icns; path = Resources/Icon.icns; sourceTree = "<group>"; };
 		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -36,8 +37,7 @@
 		7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Launchpad_Control.m; sourceTree = "<group>"; };
 		7D5DAA6D13E1E9D800483A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Launchpad_Control.xib; sourceTree = "<group>"; };
 		7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		7D5DAA7913E1EB6B00483A2F /* App.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = App.h; sourceTree = "<group>"; };
-		7D5DAA7A13E1EB6B00483A2F /* App.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = App.m; sourceTree = "<group>"; };
+		7D63FBCB14A4887400518DD2 /* 48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 48.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +57,7 @@
 		7D0D235D13F6D10400A2A1FE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7D0D235E13F6D10400A2A1FE /* btn_donate_SM.gif */,
+				7D63FBCB14A4887400518DD2 /* 48.png */,
 				7D0D235F13F6D10400A2A1FE /* donate.png */,
 			);
 			path = Resources;
@@ -108,10 +108,10 @@
 				7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */,
 				7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */,
 				7D0D236213F6F5BB00A2A1FE /* Icon.icns */,
-				7D5DAA7913E1EB6B00483A2F /* App.h */,
-				7D5DAA7A13E1EB6B00483A2F /* App.m */,
 				7D0D235D13F6D10400A2A1FE /* Resources */,
 				7D5DAA6013E1E9D800483A2F /* Supporting Files */,
+				7D0BCE0C13FC50CC00545108 /* Item.h */,
+				7D0BCE0D13FC50CC00545108 /* Item.m */,
 			);
 			path = "Launchpad-Control";
 			sourceTree = "<group>";
@@ -133,7 +133,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */,
-				7D5DAA7B13E1EB6B00483A2F /* App.h in Headers */,
+				7D0BCE0E13FC50CC00545108 /* Item.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +164,9 @@
 /* Begin PBXProject section */
 		7D5DAA4913E1E9D800483A2F /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 7D5DAA4C13E1E9D800483A2F /* Build configuration list for PBXProject "Launchpad-Control" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -188,9 +191,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */,
-				7D0D236013F6D10400A2A1FE /* btn_donate_SM.gif in Resources */,
 				7D0D236113F6D10400A2A1FE /* donate.png in Resources */,
 				7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */,
+				7D63FBCC14A4887400518DD2 /* 48.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,7 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */,
-				7D5DAA7C13E1EB6B00483A2F /* App.m in Sources */,
+				7D0BCE0F13FC50CC00545108 /* Item.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
