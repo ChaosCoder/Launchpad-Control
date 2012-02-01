@@ -13,7 +13,6 @@
 		7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D236213F6F5BB00A2A1FE /* Icon.icns */; };
 		7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */; };
 		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
-		7D1D8F8514D9F2AB00EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
 		7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1D8FB614D9FC9900EC82BA /* CCUtils.h */; };
 		7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1D8FB714D9FC9900EC82BA /* CCUtils.m */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
@@ -215,7 +214,6 @@
 				7D63FBCC14A4887400518DD2 /* twitter.png in Resources */,
 				7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */,
 				7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */,
-				7D1D8F8514D9F2AB00EC82BA /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
