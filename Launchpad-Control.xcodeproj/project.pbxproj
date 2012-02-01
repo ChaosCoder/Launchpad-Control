@@ -17,7 +17,7 @@
 		7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */; };
 		7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6C13E1E9D800483A2F /* Launchpad_Control.xib */; };
 		7D5DAA7813E1EB4500483A2F /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */; };
-		7D63FBCC14A4887400518DD2 /* 48.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D63FBCB14A4887400518DD2 /* 48.png */; };
+		7D63FBCC14A4887400518DD2 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D63FBCB14A4887400518DD2 /* twitter.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +37,7 @@
 		7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Launchpad_Control.m; sourceTree = "<group>"; };
 		7D5DAA6D13E1E9D800483A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Launchpad_Control.xib; sourceTree = "<group>"; };
 		7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		7D63FBCB14A4887400518DD2 /* 48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 48.png; sourceTree = "<group>"; };
+		7D63FBCB14A4887400518DD2 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +57,7 @@
 		7D0D235D13F6D10400A2A1FE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7D63FBCB14A4887400518DD2 /* 48.png */,
+				7D63FBCB14A4887400518DD2 /* twitter.png */,
 				7D0D235F13F6D10400A2A1FE /* donate.png */,
 			);
 			path = Resources;
@@ -185,7 +185,7 @@
 				7D5DAA6E13E1E9D800483A2F /* Launchpad_Control.xib in Resources */,
 				7D0D236113F6D10400A2A1FE /* donate.png in Resources */,
 				7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */,
-				7D63FBCC14A4887400518DD2 /* 48.png in Resources */,
+				7D63FBCC14A4887400518DD2 /* twitter.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

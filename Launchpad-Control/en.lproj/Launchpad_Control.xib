@@ -129,7 +129,7 @@
 								<reference key="NSSupport" ref="188501509"/>
 								<string key="NSCellIdentifier">_NS:161</string>
 								<reference key="NSControlView" ref="46250304"/>
-								<int key="NSButtonFlags">-2030288641</int>
+								<int key="NSButtonFlags">-2030157569</int>
 								<int key="NSButtonFlags2">129</int>
 								<string key="NSAlternateContents"/>
 								<string key="NSKeyEquivalent"/>
@@ -469,7 +469,7 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 								<int key="NSButtonFlags2">134</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">48</string>
+									<string key="NSResourceName">twitter</string>
 								</object>
 								<string key="NSAlternateContents"/>
 								<string key="NSKeyEquivalent"/>
@@ -967,6 +967,17 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 				<object class="IBPartialClassDescription">
 					<string key="className">Launchpad_Control</string>
 					<string key="superclassName">NSPreferencePane</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">buttonPressed:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">buttonPressed:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">buttonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
@@ -977,6 +988,7 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 							<string>refreshButton</string>
 							<string>resetButton</string>
 							<string>tableView</string>
+							<string>tweetButton</string>
 							<string>updateButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -987,6 +999,7 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSOutlineView</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 						</object>
 					</object>
@@ -1000,6 +1013,7 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 							<string>refreshButton</string>
 							<string>resetButton</string>
 							<string>tableView</string>
+							<string>tweetButton</string>
 							<string>updateButton</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1027,6 +1041,10 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 							<object class="IBToOneOutletInfo">
 								<string key="name">tableView</string>
 								<string key="candidateClassName">NSOutlineView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">tweetButton</string>
+								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">updateButton</string>
@@ -1111,13 +1129,13 @@ aHBhZC4gClRvIGhpZGUgYW4gYXBwIGp1c3QgdW5jaGVjayBpdCBhbmQgY2xpY2sgJ0FwcGx5Jy4</str
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>48</string>
 				<string>donate</string>
+				<string>twitter</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>{48, 48}</string>
 				<string>{64, 64}</string>
+				<string>{48, 48}</string>
 			</object>
 		</object>
 	</data>
