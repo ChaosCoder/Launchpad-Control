@@ -3,7 +3,7 @@
 //  Launchpad-Control
 //
 //  Created by Andreas Ganske on 17.08.11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 Andreas Ganske. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
