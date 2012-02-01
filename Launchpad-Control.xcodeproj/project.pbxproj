@@ -230,6 +230,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJCPP_ARC_ABI = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -257,6 +258,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJCPP_ARC_ABI = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -280,8 +282,8 @@
 					"\"$(SRCROOT)/Launchpad-Control\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Launchpad-Control/Launchpad-Control-Prefix.pch";
-				INFOPLIST_FILE = "Launchpad-Control/Launchpad-Control-Info.plist";
+				GCC_PREFIX_HEADER = "Launchpad-Control/Prefix.pch";
+				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = prefPane;
@@ -296,8 +298,8 @@
 					"\"$(SRCROOT)/Launchpad-Control\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Launchpad-Control/Launchpad-Control-Prefix.pch";
-				INFOPLIST_FILE = "Launchpad-Control/Launchpad-Control-Info.plist";
+				GCC_PREFIX_HEADER = "Launchpad-Control/Prefix.pch";
+				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = prefPane;
