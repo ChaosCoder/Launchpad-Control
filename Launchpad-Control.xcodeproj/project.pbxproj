@@ -86,19 +86,11 @@
 				7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */,
 				7D5DAA5713E1E9D800483A2F /* Cocoa.framework */,
 				7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */,
-				7D5DAA5B13E1E9D800483A2F /* Other Frameworks */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		7D5DAA5B13E1E9D800483A2F /* Other Frameworks */ = {
-			isa = PBXGroup;
-			children = (
 				7D5DAA5C13E1E9D800483A2F /* AppKit.framework */,
 				7D5DAA5D13E1E9D800483A2F /* CoreData.framework */,
 				7D5DAA5E13E1E9D800483A2F /* Foundation.framework */,
 			);
-			name = "Other Frameworks";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */ = {
