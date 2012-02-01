@@ -5,3 +5,44 @@
   Created by Andreas Ganske on 12.08.11.
   Copyright 2011 Andreas Ganske. All rights reserved.
 */
+
+// Common
+
+"Are you sure?"="Are you sure?";
+"Yes"="Yes";
+"No"="No";
+"Okay"="Okay";
+"Cancel"="Cancel";
+"Apply"="Apply";
+"Refresh"="Refresh";
+"Quit"="Quit";
+"Download"="Download";
+"Later"="Later";
+
+// Special dialogs
+
+"GetVersionXNow"="Get v%@ now!";
+"NewVersionAvailable"="New version of Launchpad-Control available!";
+"VersionXAvailable"="Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.";
+"RemoveDatabaseSureDescription"="A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.";
+
+"LoadNewDatabase?"="Do you want Launchpad-Control to load the new database?";
+"LoadNewDatabaseDescription"="If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself.";
+"RefreshingDatabase"="Refreshing database...";
+"RefreshingDatabaseDescription"="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database.";
+"RefreshingDatabaseDescriptionSecond"="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'.";
+"UnsavedChanges"="Unsaved changes!";
+"UnsavedChangesDescription"="You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?";
+// ETC
+
+"PAGE %i"="PAGE %i";
+"TwitterShareURL"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
+
+// Exceptions
+
+"DatabaseNotFoundException"="Could not find any database file for Launchpad.";
+"CouldNotCreateBackupException"="Could not backup original Launchpad database.~nBe careful!";
+"CannotOpenDatabaseException"="Could not open the database file for Launchpad.";
+"DatabaseNotFoundDescription"="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.";
+"CorruptDatabaseDetectedException"="Corrupt database detected!";
+"CorruptDatabaseDetectedDecription"="Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.";

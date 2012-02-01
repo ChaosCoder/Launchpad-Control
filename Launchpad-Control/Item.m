@@ -44,14 +44,6 @@
 
 -(NSString *)description
 {
-	/*
-	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:bundleIdentifier];
-	
-	NSString *pathString = [NSString stringWithFormat:@" (%@)",path];
-	
-	if (!path)
-		pathString = @"";
-	*/
 	return [NSString stringWithFormat:@"%@",name];
 }
 

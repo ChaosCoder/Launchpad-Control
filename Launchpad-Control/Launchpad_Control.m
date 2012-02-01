@@ -64,11 +64,11 @@ enum kItemType {
 		[updateButton setTitle:[NSString stringWithFormat:@"Get v%@ now!",newVersionString]];
 		[updateButton setHidden:NO];
 		
-		if ([[NSAlert alertWithMessageText:@"New version of Launchpad-Control available!" 
+		if ([[NSAlert alertWithMessageText:@"NewVersionAvailable" 
 							 defaultButton:@"Download" 
 						   alternateButton:@"Later" 
 							   otherButton:nil 
-				 informativeTextWithFormat:[NSString stringWithFormat:@"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.",newVersionString,currentVersion]] runModal])
+				 informativeTextWithFormat:[NSString stringWithFormat:@"VersionXAvailable",newVersionString,currentVersion]] runModal])
 		{
 			[self buttonPressed:updateButton];
 		}

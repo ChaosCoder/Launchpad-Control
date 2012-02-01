@@ -11,8 +11,9 @@
 		7D0BCE0F13FC50CC00545108 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0BCE0D13FC50CC00545108 /* Item.m */; };
 		7D0D236113F6D10400A2A1FE /* donate.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D235F13F6D10400A2A1FE /* donate.png */; };
 		7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D236213F6F5BB00A2A1FE /* Icon.icns */; };
-		7D1D8F7C14D9F1C100EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7A14D9F1C100EC82BA /* Localizable.strings */; };
 		7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */; };
+		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
+		7D1D8F8514D9F2AB00EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
 		7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */; };
 		7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */; };
@@ -26,8 +27,9 @@
 		7D0BCE0D13FC50CC00545108 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		7D0D235F13F6D10400A2A1FE /* donate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = donate.png; sourceTree = "<group>"; };
 		7D0D236213F6F5BB00A2A1FE /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
-		7D1D8F7B14D9F1C100EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Launchpad_Control.xib; path = "Launchpad-Control/Launchpad_Control.xib"; sourceTree = SOURCE_ROOT; };
+		7D1D8F8214D9F2A500EC82BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "Launchpad-Control/en.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
+		7D1D8F8414D9F2AB00EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5DAA5713E1E9D800483A2F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
@@ -59,7 +61,7 @@
 		7D0D235D13F6D10400A2A1FE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				7D1D8F7A14D9F1C100EC82BA /* Localizable.strings */,
+				7D1D8F8114D9F2A500EC82BA /* Localizable.strings */,
 				7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */,
 				7D0D236213F6F5BB00A2A1FE /* Icon.icns */,
 				7D63FBCB14A4887400518DD2 /* twitter.png */,
@@ -188,8 +190,9 @@
 				7D0D236113F6D10400A2A1FE /* donate.png in Resources */,
 				7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */,
 				7D63FBCC14A4887400518DD2 /* twitter.png in Resources */,
-				7D1D8F7C14D9F1C100EC82BA /* Localizable.strings in Resources */,
 				7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */,
+				7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */,
+				7D1D8F8514D9F2AB00EC82BA /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,10 +221,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		7D1D8F7A14D9F1C100EC82BA /* Localizable.strings */ = {
+		7D1D8F8114D9F2A500EC82BA /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				7D1D8F7B14D9F1C100EC82BA /* de */,
+				7D1D8F8214D9F2A500EC82BA /* en */,
+				7D1D8F8414D9F2AB00EC82BA /* de */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
