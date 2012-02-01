@@ -69,7 +69,7 @@ enum kItemType {
 							 defaultButton:CCLocalized("Download")
 						   alternateButton:CCLocalized("Later")
 							   otherButton:nil 
-				 informativeTextWithFormat:[NSString stringWithFormat:@"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.",newVersionString,currentVersion]] runModal])
+				 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized("Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top."),newVersionString,currentVersion]] runModal])
 		{
 			[self buttonPressed:updateButton];
 		}
@@ -559,7 +559,8 @@ END;"];
 		if ([[NSAlert alertWithMessageText:CCLocalized("Unsaved changes!") 
 							 defaultButton:CCLocalized("Apply") 
 						   alternateButton:CCLocalized("Refresh") 
-							   otherButton:CCLocalized("You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
+							   otherButton:nil
+				 informativeTextWithFormat:CCLocalized("You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
 		{
 			[self applySettings];
 		}else{
