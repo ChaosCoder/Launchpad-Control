@@ -31,8 +31,8 @@
 		7D5DAA5C13E1E9D800483A2F /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		7D5DAA5D13E1E9D800483A2F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7D5DAA5E13E1E9D800483A2F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		7D5DAA6113E1E9D800483A2F /* Launchpad-Control-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Launchpad-Control-Info.plist"; sourceTree = "<group>"; };
-		7D5DAA6513E1E9D800483A2F /* Launchpad-Control-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Launchpad-Control-Prefix.pch"; sourceTree = "<group>"; };
+		7D5DAA6113E1E9D800483A2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7D5DAA6513E1E9D800483A2F /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Launchpad_Control.h; sourceTree = "<group>"; };
 		7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Launchpad_Control.m; sourceTree = "<group>"; };
 		7D5DAA6D13E1E9D800483A2F /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Launchpad_Control.xib; sourceTree = "<group>"; };
@@ -119,8 +119,8 @@
 		7D5DAA6013E1E9D800483A2F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				7D5DAA6113E1E9D800483A2F /* Launchpad-Control-Info.plist */,
-				7D5DAA6513E1E9D800483A2F /* Launchpad-Control-Prefix.pch */,
+				7D5DAA6113E1E9D800483A2F /* Info.plist */,
+				7D5DAA6513E1E9D800483A2F /* Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
