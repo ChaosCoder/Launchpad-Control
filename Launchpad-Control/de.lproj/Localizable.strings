@@ -5,3 +5,51 @@
   Created by Andreas Ganske on 12.08.11.
   Copyright 2011 Andreas Ganske. All rights reserved.
 */
+
+// Common
+
+"Are you sure?"="Bist Du Dir sicher?";
+"Yes"="Ja";
+"No"="Nein";
+"Okay"="Okay";
+"Cancel"="Abbrechen";
+"Apply"="Anwenden";
+"Refresh"="Aktualisieren";
+"Quit"="Beenden";
+"Download"="Download";
+"Later"="Später";
+"Reset"="Reset";
+"Error"="Fehler";
+
+// UI
+
+"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.";
+"Footer"="Use at your own risk. | © Andreas Ganske";
+
+// Special dialogs
+
+"Get v%@ now!"="Get v%@ now!";
+"New version of Launchpad-Control available!"="New version of Launchpad-Control available!";
+"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top."="Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.";
+"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone."="A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.";
+
+"Do you want Launchpad-Control to load the new database?"="Do you want Launchpad-Control to load the new database?";
+"If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself."="If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself.";
+"Refreshing database..."="Refreshing database...";
+"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database."="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database.";
+"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'."="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'.";
+"Unsaved changes!"="Unsaved changes!";
+"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"="You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?";
+// ETC
+
+"PAGE %i"="PAGE %i";
+"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
+
+// Exceptions
+
+"Could not find any database file for Launchpad."="Could not find any database file for Launchpad.";
+"Could not backup original Launchpad database.~nBe careful!"="Could not backup original Launchpad database.~nBe careful!";
+"Could not open the database file for Launchpad."="Could not open the database file for Launchpad.";
+"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'."="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.";
+"Corrupt database detected!"="Corrupt database detected!";
+"Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.";
