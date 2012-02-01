@@ -7,6 +7,7 @@
 //
 
 #import "Launchpad_Control.h"
+#import "CCUtils.h"
 
 enum kItemType {
 	kItemRoot = 1,
@@ -19,7 +20,7 @@ enum kItemType {
 
 #define currentVersion @"1.4"
 
-@synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField;
+@synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 - (void)mainViewDidLoad
 {
@@ -61,14 +62,14 @@ enum kItemType {
 	NSString *newVersionString = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
 	
 	if ([newVersionString floatValue] > [currentVersion floatValue]) {
-		[updateButton setTitle:[NSString stringWithFormat:@"Get v%@ now!",newVersionString]];
+		[updateButton setTitle:[NSString stringWithFormat:CCLocalized("Get v%@ now!"),newVersionString]];
 		[updateButton setHidden:NO];
 		
-		if ([[NSAlert alertWithMessageText:@"NewVersionAvailable" 
-							 defaultButton:@"Download" 
-						   alternateButton:@"Later" 
+		if ([[NSAlert alertWithMessageText:CCLocalized("Get v%@ now!")
+							 defaultButton:CCLocalized("Download")
+						   alternateButton:CCLocalized("Later")
 							   otherButton:nil 
-				 informativeTextWithFormat:[NSString stringWithFormat:@"VersionXAvailable",newVersionString,currentVersion]] runModal])
+				 informativeTextWithFormat:[NSString stringWithFormat:@"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top.",newVersionString,currentVersion]] runModal])
 		{
 			[self buttonPressed:updateButton];
 		}
@@ -168,7 +169,7 @@ enum kItemType {
 		NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:&error];
 		
 		if (error || !files || [files count]==0)
-			[NSException raise:@"DatabaseNotFoundException" format:@"Could not find any database file for Launchpad."];
+			[NSException raise:@"DatabaseNotFoundException" format:CCLocalized("Could not find any database file for Launchpad.")];
 		
 		
 		//check if file is already there
@@ -184,7 +185,7 @@ enum kItemType {
 				}
 				
 				if (error)
-					[NSException raise:@"CouldNotCreateBackupException" format:@"Could not backup original Launchpad database.~nBe careful!"];
+					[NSException raise:@"CouldNotCreateBackupException" format:CCLocalized("Could not backup original Launchpad database.~nBe careful!")];
 				
 				if([fileManager fileExistsAtPath:databasePath])
 				{
@@ -200,14 +201,14 @@ enum kItemType {
 					}
 				}
 				
-				[NSException raise:@"CannotOpenDatabaseException" format:@"Could not open the database file for Launchpad."];
+				[NSException raise:@"CannotOpenDatabaseException" format:CCLocalized("Could not open the database file for Launchpad.")];
 			}
 		}
 		
-		[NSException raise:@"DatabaseNotFoundException" format:@"Could not find any database file for Launchpad."];
+		[NSException raise:@"DatabaseNotFoundException" format:CCLocalized("Could not find any database file for Launchpad.")];
 	}
 	@catch (NSException *exception) {
-		[[NSAlert alertWithMessageText:@"Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:[exception reason]] runModal];
+		[[NSAlert alertWithMessageText:CCLocalized("Error") defaultButton:CCLocalized("Okay") alternateButton:nil otherButton:nil informativeTextWithFormat:[exception reason]] runModal];
 		return NO;
 	}
 }
@@ -261,7 +262,7 @@ enum kItemType {
 					if ([uuid isEqualToString:@"HOLDINGPAGE"])
 						continue;
 					else
-						name = [NSString stringWithFormat:@"PAGE %i",++pageCount];
+						name = [NSString stringWithFormat:CCLocalized("PAGE %i"),++pageCount];
 					break;
 					
 				case kItemApp:
@@ -363,7 +364,7 @@ enum kItemType {
 	}else if (sender == donateButton) {
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
 	}else if (sender == tweetButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:CCLocalized("http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control")]];
 	}
 }
 
@@ -398,29 +399,29 @@ enum kItemType {
 
 -(void)removeDatabase
 {
-	if ([[NSAlert alertWithMessageText:@"Are you sure?" 
-						 defaultButton:@"Yes" 
-					   alternateButton:@"No" 
+	if ([[NSAlert alertWithMessageText:CCLocalized("Are you sure?") 
+						 defaultButton:CCLocalized("Yes") 
+					   alternateButton:CCLocalized("No") 
 						   otherButton:nil 
-			 informativeTextWithFormat:@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone."] runModal])
+			 informativeTextWithFormat:CCLocalized("A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
 		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
-		if ([[NSAlert alertWithMessageText:@"Do you want Launchpad-Control to load the new database?" 
-						defaultButton:@"Yes" 
-					  alternateButton:@"No" 
+		if ([[NSAlert alertWithMessageText:CCLocalized("Do you want Launchpad-Control to load the new database?") 
+						defaultButton:CCLocalized("Yes") 
+					  alternateButton:CCLocalized("No") 
 						  otherButton:nil 
-				 informativeTextWithFormat:@"If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself."] runModal]) 
+				 informativeTextWithFormat:CCLocalized("If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself.")] runModal]) 
 		{
 			while (![self openDatabase]) {
-				if ([[NSAlert alertWithMessageText:@"Could not find any database." 
-									 defaultButton:@"Refresh" 
-								   alternateButton:@"Quit" 
+				if ([[NSAlert alertWithMessageText:CCLocalized("Could not find any database.") 
+									 defaultButton:CCLocalized("Refresh") 
+								   alternateButton:CCLocalized("Quit") 
 									   otherButton:nil 
-						 informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'."] runModal]) {
+						 informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.")] runModal]) {
 				}else{
 					[[NSApplication sharedApplication] terminate:self];
 				}
@@ -519,29 +520,29 @@ END;"];
 
 -(void)databaseIsCorrupt
 {
-	if ([[NSAlert alertWithMessageText:@"Corrupt database detected!" 
-						 defaultButton:@"Okay" 
-					   alternateButton:@"Cancel" 
+	if ([[NSAlert alertWithMessageText:CCLocalized("Corrupt database detected!") 
+						 defaultButton:CCLocalized("Okay") 
+					   alternateButton:CCLocalized("Cancel") 
 						   otherButton:nil 
-			 informativeTextWithFormat:@"Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."] runModal])
+			 informativeTextWithFormat:CCLocalized("Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
 		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
-		[[NSAlert alertWithMessageText:@"Refreshing database..." 
-						defaultButton:@"Okay" 
+		[[NSAlert alertWithMessageText:CCLocalized("Refreshing database...") 
+						defaultButton:CCLocalized("Okay") 
 					  alternateButton:nil 
 						  otherButton:nil 
-			informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database."] runModal];
+			informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database.")] runModal];
 		
 		while (![self openDatabase]) {
-			if ([[NSAlert alertWithMessageText:@"Could not find any database." 
-								 defaultButton:@"Refresh" 
-							   alternateButton:@"Quit" 
+			if ([[NSAlert alertWithMessageText:CCLocalized("Could not find any database.") 
+								 defaultButton:CCLocalized("Refresh") 
+							   alternateButton:CCLocalized("Quit") 
 								   otherButton:nil 
-					 informativeTextWithFormat:@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'."] runModal]) {
+					 informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'.")] runModal]) {
 			}else{
 				[[NSApplication sharedApplication] terminate:self];
 			}
@@ -555,11 +556,10 @@ END;"];
 -(void)refreshDatabase
 {
 	if (changedData) {
-		if ([[NSAlert alertWithMessageText:@"Unsaved changes!" 
-							 defaultButton:@"Apply" 
-						   alternateButton:@"Refresh" 
-							   otherButton:nil 
-				 informativeTextWithFormat:@"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"] runModal])
+		if ([[NSAlert alertWithMessageText:CCLocalized("Unsaved changes!") 
+							 defaultButton:CCLocalized("Apply") 
+						   alternateButton:CCLocalized("Refresh") 
+							   otherButton:CCLocalized("You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
 		{
 			[self applySettings];
 		}else{

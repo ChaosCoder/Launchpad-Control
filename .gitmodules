@@ -1,3 +1,3 @@
 [submodule "Externals/CCLibrary"]
 	path = Externals/CCLibrary
-	url = git://github.com/ChaosCoder/CCLibrary.git
+	url = git@github.com:ChaosCoder/CCLibrary.git

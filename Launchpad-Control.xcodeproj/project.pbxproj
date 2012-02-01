@@ -14,6 +14,8 @@
 		7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */; };
 		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
 		7D1D8F8514D9F2AB00EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
+		7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1D8FB614D9FC9900EC82BA /* CCUtils.h */; };
+		7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1D8FB714D9FC9900EC82BA /* CCUtils.m */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
 		7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */; };
 		7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */; };
@@ -30,6 +32,8 @@
 		7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Launchpad_Control.xib; path = "Launchpad-Control/Launchpad_Control.xib"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8214D9F2A500EC82BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "Launchpad-Control/en.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8414D9F2AB00EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
+		7D1D8FB614D9FC9900EC82BA /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
+		7D1D8FB714D9FC9900EC82BA /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
 		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5DAA5713E1E9D800483A2F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
@@ -70,9 +74,27 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		7D1D8FB414D9FC9900EC82BA /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+				7D1D8FB514D9FC9900EC82BA /* CCLibrary */,
+			);
+			path = Externals;
+			sourceTree = "<group>";
+		};
+		7D1D8FB514D9FC9900EC82BA /* CCLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				7D1D8FB614D9FC9900EC82BA /* CCUtils.h */,
+				7D1D8FB714D9FC9900EC82BA /* CCUtils.m */,
+			);
+			path = CCLibrary;
+			sourceTree = "<group>";
+		};
 		7D5DAA4713E1E9D700483A2F = {
 			isa = PBXGroup;
 			children = (
+				7D1D8FB414D9FC9900EC82BA /* Externals */,
 				7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */,
 				7D5DAA5613E1E9D800483A2F /* Frameworks */,
 				7D5DAA5513E1E9D800483A2F /* Products */,
@@ -131,6 +153,7 @@
 			files = (
 				7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */,
 				7D0BCE0E13FC50CC00545108 /* Item.h in Headers */,
+				7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +238,7 @@
 			files = (
 				7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */,
 				7D0BCE0F13FC50CC00545108 /* Item.m in Sources */,
+				7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

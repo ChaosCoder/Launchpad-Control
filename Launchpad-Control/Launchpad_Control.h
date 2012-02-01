@@ -63,17 +63,19 @@
 
 -(IBAction)buttonPressed:(id)sender;
 
-@property (assign) IBOutlet NSOutlineView *tableView;
+@property (nonatomic, weak) IBOutlet NSOutlineView *tableView;
 
-@property (assign) IBOutlet NSButton *updateButton;
-@property (assign) IBOutlet NSButton *donateButton;
-@property (assign) IBOutlet NSButton *tweetButton;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *descriptionFieldCell;
 
-@property (assign) IBOutlet NSButton *resetButton;
+@property (nonatomic, weak) IBOutlet NSButton *updateButton;
+@property (nonatomic, weak) IBOutlet NSButton *donateButton;
+@property (nonatomic, weak) IBOutlet NSButton *tweetButton;
 
-@property (assign) IBOutlet NSButton *refreshButton;
-@property (assign) IBOutlet NSButton *applyButton;
+@property (nonatomic, weak) IBOutlet NSButton *resetButton;
 
-@property (assign) IBOutlet NSTextFieldCell *currentVersionField;
+@property (nonatomic, weak) IBOutlet NSButton *refreshButton;
+@property (nonatomic, weak) IBOutlet NSButton *applyButton;
+
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *currentVersionField;
 
 @end
