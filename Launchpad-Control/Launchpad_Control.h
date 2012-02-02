@@ -9,6 +9,8 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <sqlite3.h>
 #import "Item.h"
+#import <PreferencePanes/PreferencePanes.h>
+#import <SecurityInterface/SFAuthorizationView.h>
 
 @interface Launchpad_Control : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate> {
 	NSString *databasePath;
@@ -33,12 +35,17 @@
 	sqlite3 *db;
 	BOOL dbOpened;
 	BOOL changedData;
+	NSMutableDictionary *plist;
+	NSMutableArray *ignoredBundles;
 	
 	NSMutableData *receivedData;
+	
+	IBOutlet SFAuthorizationView *authView;
 }
 
-- (void)mainViewDidLoad;
-
+#pragma mark - Load
+-(void)mainViewDidLoad;
+-(void)loadPlist;
 -(void)reload;
 
 -(BOOL)openDatabase;
@@ -60,6 +67,8 @@
 
 -(void)dropTriggers;
 -(void)createTriggers;
+
+-(void)migrateFrom:(NSString *)version;
 
 -(IBAction)buttonPressed:(id)sender;
 

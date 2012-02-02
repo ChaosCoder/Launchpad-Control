@@ -1,2 +1,4 @@
 *.DS_Store
 Launchpad-Control.xcodeproj/project.xcworkspace/*
+Launchpad-Control.xcodeproj/xcuserdata/*
+.gitignore

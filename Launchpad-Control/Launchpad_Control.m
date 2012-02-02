@@ -18,12 +18,18 @@ enum kItemType {
 
 @implementation Launchpad_Control
 
-#define currentVersion @"1.4"
+static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources/LaunchPadLayout.plist";
+static NSString *plistTemporaryPath = @"/tmp/LaunchPadLayout.plist";
+static NSString *currentVersion;
 
 @synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
+#pragma mark Loading
+
 - (void)mainViewDidLoad
 {
+	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
+	
 	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
 	[resetButton setTitle:CCLocalized("Reset")];
 	[refreshButton setTitle:CCLocalized("Refresh")];
@@ -32,11 +38,52 @@ enum kItemType {
 	
 	items = [[NSMutableArray alloc] init];
 	
+	[self setupRights];
+	[self loadPlist];
 	[self openDatabase];
 	
 	[self reload];
 	
 	[self performSelector:@selector(checkForUpdates) withObject:nil afterDelay:3.0f];
+}
+
+-(void)setupRights
+{
+	AuthorizationItem authorizationItems = {kAuthorizationRightExecute, 0, NULL, 0};
+    AuthorizationRights authorizationRights = {1, &authorizationItems};
+    [authView setAuthorizationRights:&authorizationRights];
+    authView.delegate = self;
+    [authView updateStatus:nil];
+}
+
+//
+// SFAuthorization delegates
+//
+
+- (BOOL)isUnlocked {
+    return [authView authorizationState] == SFAuthorizationViewUnlockedState;
+}
+
+- (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view {
+	[[NSAlert alertWithMessageText:[NSString stringWithFormat:@"ADMINRIGHTS: %i",[self isUnlocked]]
+					 defaultButton:CCLocalized("Okay")
+				   alternateButton:nil
+					   otherButton:nil 
+		 informativeTextWithFormat:nil] runModal];
+}
+
+- (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view {
+    [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"ADMINRIGHTS: %i",[self isUnlocked]]
+					 defaultButton:CCLocalized("Okay")
+				   alternateButton:nil
+					   otherButton:nil 
+		 informativeTextWithFormat:nil] runModal];
+}
+
+-(void)loadPlist
+{
+	plist = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+	ignoredBundles = [plist objectForKey:@"ignore"];
 }
 
 -(void)checkForUpdates
@@ -109,14 +156,14 @@ enum kItemType {
 	switch ([(Item *)item type]) 
 	{
 		case kItemRoot:
+		case kItemGroup:
+		case kItemPage: 
 		{
 			cell = [[NSCell alloc] initTextCell:[item name]];
 			
 			break;
 		}
 			
-		case kItemGroup:
-		case kItemPage: 
 		case kItemApp:
 		{
 			cell = [[NSButtonCell alloc] init];
@@ -134,11 +181,11 @@ enum kItemType {
 {
 	switch ([(Item *)item type]) {
 		case kItemRoot:
+		case kItemGroup:
+		case kItemPage:
 			return [item name];
 			break;
 			
-		case kItemGroup:
-		case kItemPage:
 		case kItemApp:
 			return [NSNumber numberWithInteger:([(Item *)item visible] ? NSOnState : NSOffState)];
 			break;
@@ -196,10 +243,9 @@ enum kItemType {
 					if(sqlite3_open([databasePath UTF8String], &db) == SQLITE_OK)
 					{
 						dbOpened = YES;
-						if (![[self getDatabaseVersion] isEqualToString:currentVersion]) {
-							[self dropTriggers];
-							[self createTriggers];
-							[self setDatabaseVersion];
+						NSString *databaseVersion = [self getDatabaseVersion];
+						if (![databaseVersion isEqualToString:currentVersion]) {
+							[self migrateFrom:databaseVersion];
 						}
 						return YES;
 					}
@@ -228,9 +274,9 @@ enum kItemType {
 	NSString *sqlString = [NSString stringWithFormat:@"\
 						   SELECT rowid,parent_id,uuid,flags,type,ordering,apps.title,groups.title,apps.bundleid \
 						   FROM items \
-						   LEFT JOIN apps ON rowid = apps.item_id \
-						   LEFT JOIN groups ON rowid = groups.item_id \
-						   ORDER BY ABS(parent_id),ordering;"];
+						   LEFT JOIN apps ON ABS(rowid) = apps.item_id \
+						   LEFT JOIN groups ON ABS(rowid) = groups.item_id \
+						   ORDER BY parent_id,ordering;"];
 	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
 	sqlite3_stmt *statement;
 	
@@ -307,14 +353,14 @@ enum kItemType {
 			}
 			
 			if (!item) {
-				item = [[Item alloc] initWithID:rowid
+				item = [[Item alloc] initWithID:labs(rowid)
 										   name:name
 										 parent:parent 
 										   uuid:uuid 
 										  flags:flags
 										   type:type 
 									   ordering:ordering
-										visible:parent_id>0];
+										visible:rowid>0];
 			}else{
 				[item setName:name];
 				[item setParent:parent];
@@ -322,7 +368,7 @@ enum kItemType {
 				[item setFlags:flags];
 				[item setType:type];
 				[item setOrdering:ordering];
-				[item setVisible:parent_id>0];
+				[item setVisible:rowid>0];
 			}
 			
 			[item setBundleIdentifier:bundleID];
@@ -372,28 +418,58 @@ enum kItemType {
 	}
 }
 
+-(BOOL)movePlistWithRights
+{
+	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:@"-c"];
+	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",plistTemporaryPath,plistPath]];
+	// Convert array into void-* array.
+	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
+	int argvIndex = 0;
+	for (NSString *string in args) {
+		argv[argvIndex] = [string UTF8String];
+		argvIndex++;
+	}
+	argv[argvIndex] = nil;
+	
+	OSErr processError = AuthorizationExecuteWithPrivileges([[authView authorization] authorizationRef], [@"/bin/sh" UTF8String],
+															kAuthorizationFlagDefaults, (char *const *)argv, nil);
+	free(argv);
+	
+	if (processError != errAuthorizationSuccess)
+		return false;
+	
+	return true;
+}
+
 -(void)applySettings
 {
+	NSMutableString *sqlQuery = nil;
+	bool oldChangedData = changedData;
 	changedData = NO;
 	for (Item *item in items) {
 		if (item == rootItem)
 			continue;
 		
-		NSString *sqlString = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE rowid = %i;", [[item parent] identifier] * ([item visible] ? 1 : -1),[item identifier]];
-		const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+		[sqlQuery appendFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", [item identifier] * ([item visible] ? 1 : -1),[item identifier]];
 		
-		sqlite3_exec(db, sql, NULL, NULL, NULL);
-		
-		/*
-		sqlite3_stmt *statement;
-		if (sqlite3_prepare_v2(db, sql, -1, &statement, NULL) == SQLITE_OK)
-		{
-			sqlite3_step(statement);
-			sqlite3_finalize(statement);
+		if (item.bundleIdentifier && [item.bundleIdentifier isNotEqualTo:@""]) {
+			if ([item visible]) {
+				[ignoredBundles removeObject:item.bundleIdentifier];
+			}else if(![ignoredBundles containsObject:item.bundleIdentifier]){
+				[ignoredBundles addObject:item.bundleIdentifier];
+			}
 		}
-		 */
 	}
-	[self restartDock];
+	
+	[plist writeToFile:plistTemporaryPath atomically:YES];
+	
+	if([self movePlistWithRights]) {
+		const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+		sqlite3_exec(db, sql, NULL, NULL, NULL);
+		changedData = oldChangedData;
+		[self restartDock];
+	}
 }
 
 -(void)restartDock
@@ -573,6 +649,21 @@ END;"];
 	}else{
 		[self reload];
 	}
+}
+
+-(void)migrateFrom:(NSString *)oldVersion
+{
+	if ([oldVersion isEqualToString:@"1.3"]) {
+		//[self dropTriggers];
+		//[self createTriggers];
+	}else if([oldVersion isEqualToString:@"1.4"]) {
+		NSString *sqlString = [NSString stringWithFormat: @"UPDATE items SET rowid=ABS(rowid), parent_id=ABS(parent_id) WHERE parent_id>0; \n\
+															UPDATE items SET rowid=-ABS(rowid), parent_id=ABS(parent_id) WHERE parent_id<0;"];
+		const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
+		sqlite3_exec(db, sql, NULL, NULL, NULL);
+	}
+	
+	[self setDatabaseVersion];
 }
 
 -(void)closeDatabase
