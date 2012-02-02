@@ -24,6 +24,10 @@ enum kItemType {
 
 - (void)mainViewDidLoad
 {
+	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
+	[resetButton setTitle:CCLocalized("Reset")];
+	[refreshButton setTitle:CCLocalized("Refresh")];
+	[applyButton setTitle:CCLocalized("Apply")];
 	[currentVersionField setTitle:[NSString stringWithFormat:@"v%@",currentVersion]];
 	
 	items = [[NSMutableArray alloc] init];

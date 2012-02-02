@@ -23,7 +23,7 @@
 
 // UI
 
-"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="Diese App erlaubt es Dir Apps und Gruppen im Launchpad zu verstecken.~nWähle die Apps ab, die versteckt werden sollen und klicke auf 'Anwenden'.";
+"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="Diese App erlaubt es Dir Apps und Gruppen im Launchpad zu verstecken.\nWähle die Apps ab, die versteckt werden sollen und klicke auf 'Anwenden'.";
 "Footer"="Benutzung auf eigene Gefahr | © Andreas Ganske";
 
 // Special dialogs

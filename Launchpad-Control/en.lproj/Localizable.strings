@@ -23,7 +23,7 @@
 
 // UI
 
-"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.";
+"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="This app allows you to easily hide apps or groups from Launchpad.\nTo hide an app just uncheck it and click 'Apply'.";
 "Footer"="Use at your own risk. | © Andreas Ganske";
 
 // Special dialogs
