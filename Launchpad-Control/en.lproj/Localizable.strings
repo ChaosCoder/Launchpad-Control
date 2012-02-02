@@ -50,6 +50,5 @@
 "Could not find any database file for Launchpad."="Could not find any database file for Launchpad.";
 "Could not backup original Launchpad database.~nBe careful!"="Could not backup original Launchpad database.~nBe careful!";
 "Could not open the database file for Launchpad."="Could not open the database file for Launchpad.";
-"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'."="Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.";
 "Corrupt database detected!"="Corrupt database detected!";
 "Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.";
