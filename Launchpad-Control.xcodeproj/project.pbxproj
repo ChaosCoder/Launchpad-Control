@@ -99,8 +99,6 @@
 		7D5DAA4713E1E9D700483A2F = {
 			isa = PBXGroup;
 			children = (
-				7D81202E14DB2979005D5D37 /* Security.framework */,
-				7D81202F14DB2979005D5D37 /* SecurityInterface.framework */,
 				7D1D8FB414D9FC9900EC82BA /* Externals */,
 				7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */,
 				7D5DAA5613E1E9D800483A2F /* Frameworks */,
@@ -120,6 +118,8 @@
 			isa = PBXGroup;
 			children = (
 				7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */,
+				7D81202E14DB2979005D5D37 /* Security.framework */,
+				7D81202F14DB2979005D5D37 /* SecurityInterface.framework */,
 				7D5DAA5713E1E9D800483A2F /* Cocoa.framework */,
 				7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */,
 				7D5DAA5C13E1E9D800483A2F /* AppKit.framework */,

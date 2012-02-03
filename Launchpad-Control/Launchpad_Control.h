@@ -40,6 +40,7 @@
 	
 	NSMutableData *receivedData;
 	
+	Item *draggedItem;
 	IBOutlet SFAuthorizationView *authView;
 }
 
@@ -54,6 +55,7 @@
 -(BOOL)fetchItems;
 -(void)setVisible:(BOOL)visible forItem:(Item *)item;
 
+-(void)setupRights;
 -(void)applySettings;
 -(void)restartDock;
 

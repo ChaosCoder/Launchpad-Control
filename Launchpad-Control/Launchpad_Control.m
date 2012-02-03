@@ -22,6 +22,8 @@ static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Re
 static NSString *plistTemporaryPath = @"/tmp/LaunchPadLayout.plist";
 static NSString *currentVersion;
 
+#define MyPrivateTableViewDataType @"MyPrivateTableViewDataType"
+
 @synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 #pragma mark Loading
@@ -29,6 +31,7 @@ static NSString *currentVersion;
 - (void)mainViewDidLoad
 {
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
+	[tableView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
 	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
 	[resetButton setTitle:CCLocalized("Reset")];
@@ -65,19 +68,9 @@ static NSString *currentVersion;
 }
 
 - (void)authorizationViewDidAuthorize:(SFAuthorizationView *)view {
-	[[NSAlert alertWithMessageText:[NSString stringWithFormat:@"ADMINRIGHTS: %i",[self isUnlocked]]
-					 defaultButton:CCLocalized("Okay")
-				   alternateButton:nil
-					   otherButton:nil 
-		 informativeTextWithFormat:nil] runModal];
 }
 
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view {
-    [[NSAlert alertWithMessageText:[NSString stringWithFormat:@"ADMINRIGHTS: %i",[self isUnlocked]]
-					 defaultButton:CCLocalized("Okay")
-				   alternateButton:nil
-					   otherButton:nil 
-		 informativeTextWithFormat:nil] runModal];
 }
 
 -(void)loadPlist
@@ -156,18 +149,22 @@ static NSString *currentVersion;
 	switch ([(Item *)item type]) 
 	{
 		case kItemRoot:
-		case kItemGroup:
-		case kItemPage: 
 		{
 			cell = [[NSCell alloc] initTextCell:[item name]];
 			
 			break;
 		}
 			
+		case kItemGroup:
+		case kItemPage: 
 		case kItemApp:
 		{
 			cell = [[NSButtonCell alloc] init];
 			[(NSButtonCell *)cell setButtonType:NSSwitchButton];
+			
+			if ([[item bundleIdentifier] isEqualToString:@""])
+				[cell setEnabled:NO];
+			
 			[cell setTitle:[item description]];
 			
 			break;
@@ -181,11 +178,11 @@ static NSString *currentVersion;
 {
 	switch ([(Item *)item type]) {
 		case kItemRoot:
-		case kItemGroup:
-		case kItemPage:
 			return [item name];
 			break;
 			
+		case kItemGroup:
+		case kItemPage:
 		case kItemApp:
 			return [NSNumber numberWithInteger:([(Item *)item visible] ? NSOnState : NSOffState)];
 			break;
@@ -195,8 +192,8 @@ static NSString *currentVersion;
 
 -(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	[self setVisible:[object boolValue] forItem:(Item *)item];
-	[tableView reloadItem:item reloadChildren:YES];
+	//[self setVisible:[object boolValue] forItem:(Item *)item];
+	//[tableView reloadItem:item reloadChildren:YES];
 }
 
 -(void)setVisible:(BOOL)visible forItem:(Item *)item
@@ -444,16 +441,25 @@ static NSString *currentVersion;
 
 -(void)applySettings
 {
-	NSMutableString *sqlQuery = nil;
+	NSMutableArray *sqlQueries = [NSMutableArray array];
 	bool oldChangedData = changedData;
 	changedData = NO;
 	for (Item *item in items) {
 		if (item == rootItem)
 			continue;
 		
-		[sqlQuery appendFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", [item identifier] * ([item visible] ? 1 : -1),[item identifier]];
+		[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", [item identifier] * ([item visible] ? 1 : -1), [[item parent] identifier], [item identifier]]];
 		
-		if (item.bundleIdentifier && [item.bundleIdentifier isNotEqualTo:@""]) {
+		if (item.newParent)
+			[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [[item parent] identifier], [item identifier]]];
+		
+		if (item.newOrder)
+			[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET ordering = %i WHERE ABS(rowid) = %i;", [item ordering], [item identifier]]];
+		
+		item.newParent = NO;
+		item.newOrder = NO;
+		
+		if (item.type==kItemApp && item.bundleIdentifier && [item.bundleIdentifier isNotEqualTo:@""]) {
 			if ([item visible]) {
 				[ignoredBundles removeObject:item.bundleIdentifier];
 			}else if(![ignoredBundles containsObject:item.bundleIdentifier]){
@@ -464,11 +470,16 @@ static NSString *currentVersion;
 	
 	[plist writeToFile:plistTemporaryPath atomically:YES];
 	
-	if([self movePlistWithRights]) {
-		const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-		sqlite3_exec(db, sql, NULL, NULL, NULL);
-		changedData = oldChangedData;
+	if([self movePlistWithRights]) 
+	{
+		for (NSString *sqlQuery in sqlQueries) {
+			const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+			sqlite3_exec(db, sql, NULL, NULL, NULL);
+		}
+		
 		[self restartDock];
+	}else{
+		changedData = oldChangedData;
 	}
 }
 
@@ -683,6 +694,80 @@ END;"];
 	}
 	
 	changedData = NO;
+}
+
+#pragma mark - Reodering
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)_items toPasteboard:(NSPasteboard *)pasteboard
+{
+	// Copy the row numbers to the pasteboard.
+	//NSData *zNSIndexSetData = [NSKeyedArchiver archivedDataWithRootObject:_items];
+	//[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
+	//[pasteboard setData:zNSIndexSetData forType:MyPrivateTableViewDataType];
+	//[pasteboard declareTypes:MyPrivateTableViewDataType owner:self ];
+	
+	draggedItem = [_items objectAtIndex:0];
+	
+	NSData *itemData = [NSKeyedArchiver archivedDataWithRootObject:draggedItem];
+	[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
+	[pasteboard setData:itemData forType:MyPrivateTableViewDataType];
+	
+	return YES;
+}
+
+-(NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+{
+	return NSDragOperationEvery;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)parentItem childIndex:(NSInteger)dropRow 
+{
+	NSPasteboard *pboard = [info draggingPasteboard];
+	Item *item = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:MyPrivateTableViewDataType]];
+	
+	NSInteger dragRow = [[[draggedItem parent] children] indexOfObject:draggedItem];
+	
+	[draggedItem retain];
+	
+	if ([draggedItem parent] == parentItem) {
+		if (dragRow < dropRow) {
+			dropRow--;
+		}
+	}else{
+		[draggedItem setNewParent:YES];
+		[draggedItem setNewOrder:YES];
+	}
+	
+	for (Item *child in [[draggedItem parent] children]) {
+		if (child == draggedItem) continue;
+		
+		if (child.ordering>=draggedItem.ordering)
+			child.ordering--;
+	}
+	
+	[[[draggedItem parent] children] removeObject:draggedItem];
+	[[(Item *)parentItem children] insertObject:draggedItem atIndex:dropRow];
+	
+	[draggedItem setParent:parentItem];
+	
+	if ([draggedItem ordering]!=dropRow) 
+		[draggedItem setNewOrder:YES];
+	
+	[draggedItem setOrdering:dropRow];
+	
+	for (Item *child in [[draggedItem parent] children]) {
+		if (child == draggedItem) continue;
+		
+		if (child.ordering>=draggedItem.ordering)
+			child.ordering++;
+	}
+	
+	[draggedItem release];
+		
+	[outlineView noteNumberOfRowsChanged];
+	[outlineView reloadData];
+		
+	return YES;
 }
 
 @end
