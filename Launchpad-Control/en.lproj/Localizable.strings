@@ -42,7 +42,7 @@
 "You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"="You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?";
 // ETC
 
-"PAGE %i"="PAGE %i";
+"PAGE"="PAGE";
 "http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
 
 // Exceptions

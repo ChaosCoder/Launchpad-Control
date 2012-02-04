@@ -46,7 +46,7 @@
 
 -(NSString *)description
 {
-	return [NSString stringWithFormat:@"%@ (%i)",name, ordering];
+	return name; //[NSString stringWithFormat:@"%@ (%i)",name,ordering];
 }
 
 -(BOOL)isVisible

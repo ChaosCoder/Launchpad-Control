@@ -9,11 +9,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Launchpad-Control/Launchpad_Control.m"
-         timestampString = "349917757.945527"
+         timestampString = "350004727.443248"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "135"
-         endingLineNumber = "135"
+         startingLineNumber = "131"
+         endingLineNumber = "131"
          landmarkName = "@implementation Launchpad_Control"
          landmarkType = "3">
       </FileBreakpoint>
@@ -23,11 +23,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Launchpad-Control/Launchpad_Control.m"
-         timestampString = "349917757.945527"
+         timestampString = "350004727.443248"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "97"
-         endingLineNumber = "97"
+         startingLineNumber = "93"
+         endingLineNumber = "93"
          landmarkName = "-checkForUpdates"
          landmarkType = "5">
       </FileBreakpoint>
@@ -37,11 +37,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Launchpad-Control/Launchpad_Control.m"
-         timestampString = "349986903.79821"
+         timestampString = "350004727.443248"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "172"
-         endingLineNumber = "172"
+         startingLineNumber = "169"
+         endingLineNumber = "169"
          landmarkName = "-outlineView:dataCellForTableColumn:item:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -51,26 +51,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Launchpad-Control/Launchpad_Control.m"
-         timestampString = "349986903.79821"
+         timestampString = "350004727.443248"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "422"
-         endingLineNumber = "422"
+         startingLineNumber = "418"
+         endingLineNumber = "418"
          landmarkName = "-movePlistWithRights"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Launchpad-Control/Launchpad_Control.m"
-         timestampString = "349994387.763446"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "382"
-         endingLineNumber = "382"
-         landmarkName = "-fetchItems"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

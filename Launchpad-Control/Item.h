@@ -8,6 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+enum kItemType {
+	kItemRoot = 1,
+	kItemGroup = 2,
+	kItemPage = 3,
+	kItemApp = 4
+};
+
 @interface Item : NSObject <NSCoding> {
 	NSInteger identifier;
 	NSString *name;

@@ -9,18 +9,14 @@
 #import "Launchpad_Control.h"
 #import "CCUtils.h"
 
-enum kItemType {
-	kItemRoot = 1,
-	kItemGroup = 2,
-	kItemPage = 3,
-	kItemApp = 4
-};
-
 @implementation Launchpad_Control
 
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources/LaunchPadLayout.plist";
 static NSString *plistTemporaryPath = @"/tmp/LaunchPadLayout.plist";
 static NSString *currentVersion;
+
+static NSInteger maximumItemsPerPage = 40;
+static NSInteger maximumItemsPerGroup = 32;
 
 #define MyPrivateTableViewDataType @"MyPrivateTableViewDataType"
 
@@ -161,6 +157,8 @@ static NSString *currentVersion;
 		{
 			cell = [[NSButtonCell alloc] init];
 			[(NSButtonCell *)cell setButtonType:NSSwitchButton];
+			[cell setEditable:YES];
+			[cell setSelectable:YES];
 			
 			if ([[item bundleIdentifier] isEqualToString:@""])
 				[cell setEnabled:NO];
@@ -192,8 +190,8 @@ static NSString *currentVersion;
 
 -(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	//[self setVisible:[object boolValue] forItem:(Item *)item];
-	//[tableView reloadItem:item reloadChildren:YES];
+	[self setVisible:[object boolValue] forItem:(Item *)item];
+	[tableView reloadItem:item reloadChildren:YES];
 }
 
 -(void)setVisible:(BOOL)visible forItem:(Item *)item
@@ -309,7 +307,7 @@ static NSString *currentVersion;
 					if ([uuid isEqualToString:@"HOLDINGPAGE"])
 						continue;
 					else
-						name = [NSString stringWithFormat:CCLocalized("PAGE %i"),++pageCount];
+						name = [CCLocalized("PAGE") stringByAppendingFormat:@" %i",++pageCount];
 					break;
 					
 				case kItemApp:
@@ -478,6 +476,7 @@ static NSString *currentVersion;
 		}
 		
 		[self restartDock];
+		[self reload];
 	}else{
 		changedData = oldChangedData;
 	}
@@ -717,13 +716,22 @@ END;"];
 
 -(NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
 {
-	return NSDragOperationEvery;
+	if (draggedItem.type == kItemPage && item) // Page not in Root
+		return NO;
+	
+	if (draggedItem.type == kItemGroup && [(Item *)item type]!=kItemPage) // Group not in Page
+		return NO;
+	
+	if (draggedItem.type == kItemApp && [(Item *)item type]==kItemGroup && [[(Item *)item children] count]>=maximumItemsPerGroup) // App in full group
+		return NO;
+	
+	return NSDragOperationMove;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)parentItem childIndex:(NSInteger)dropRow 
 {
-	NSPasteboard *pboard = [info draggingPasteboard];
-	Item *item = [NSKeyedUnarchiver unarchiveObjectWithData:[pboard dataForType:MyPrivateTableViewDataType]];
+	if (parentItem == nil) 
+		parentItem = rootItem;
 	
 	NSInteger dragRow = [[[draggedItem parent] children] indexOfObject:draggedItem];
 	
@@ -737,7 +745,7 @@ END;"];
 		[draggedItem setNewParent:YES];
 		[draggedItem setNewOrder:YES];
 	}
-	
+
 	for (Item *child in [[draggedItem parent] children]) {
 		if (child == draggedItem) continue;
 		
@@ -746,14 +754,19 @@ END;"];
 	}
 	
 	[[[draggedItem parent] children] removeObject:draggedItem];
-	[[(Item *)parentItem children] insertObject:draggedItem atIndex:dropRow];
 	
 	[draggedItem setParent:parentItem];
+	[[[draggedItem parent] children] removeObject:draggedItem];
+	[[[draggedItem parent] children] insertObject:draggedItem atIndex:dropRow];
 	
 	if ([draggedItem ordering]!=dropRow) 
 		[draggedItem setNewOrder:YES];
 	
 	[draggedItem setOrdering:dropRow];
+	
+	if (draggedItem.type == kItemPage)
+		[draggedItem setOrdering:dropRow+1];
+	
 	
 	for (Item *child in [[draggedItem parent] children]) {
 		if (child == draggedItem) continue;
@@ -763,11 +776,90 @@ END;"];
 	}
 	
 	[draggedItem release];
-		
+	
+	[self updatePages];
+	
 	[outlineView noteNumberOfRowsChanged];
 	[outlineView reloadData];
 		
 	return YES;
 }
+
+-(void)updatePages
+{
+	NSMutableArray *overflow = [[NSMutableArray alloc] initWithCapacity:1];
+	for (Item *page in [rootItem children]) {
+		if ([overflow count]>0) {
+			int i = 0;
+			for (Item *item in overflow) {
+				[[[item parent] children] removeObject:item];
+				[item setParent:page];
+				[item setOrdering:i++];
+				[[[item parent] children] removeObject:item];
+				[[[item parent] children] insertObject:item atIndex:[item ordering]];
+				[item setNewParent:YES];
+				[item setNewOrder:YES];
+			}
+		}
+		[overflow removeAllObjects];
+		
+		for (NSInteger i=maximumItemsPerPage; i<[[page children] count]; i++) {
+			[overflow addObject:[[page children] objectAtIndex:i]];
+		}
+	}
+	
+	if ([overflow count]>0) { // Last page had more elements than 40
+		Item *page = [self createNewPage];
+		int i = 0;
+		for (Item *item in overflow) {
+			[[[item parent] children] removeObject:item];
+			[item setParent:page];
+			[item setOrdering:i++];
+			[[[item parent] children] removeObject:item];
+			[[[item parent] children] insertObject:item atIndex:[item ordering]];
+			[item setNewParent:YES];
+			[item setNewOrder:YES];
+		}
+	}
+}
+
+// return a new autoreleased UUID string
+- (NSString *)generateUUIDString
+{
+	// create a new UUID which you own
+	CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+	
+	// create a new CFStringRef (toll-free bridged to NSString)
+	// that you own
+	NSString *uuidString = (NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuid);
+	
+	// transfer ownership of the string
+	// to the autorelease pool
+	[uuidString autorelease];
+	
+	// release the UUID
+	CFRelease(uuid);
+	
+	return uuidString;
+}
+
+-(Item *)createNewPage {
+	NSString *uuid = [self generateUUIDString];
+	NSUInteger ordering = [[rootItem children] count];
+	
+	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,3,%i,%i);", uuid, [rootItem identifier], ordering];
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	
+	NSInteger rowid = sqlite3_last_insert_rowid(db);
+	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,NULL);", rowid];
+	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	
+	Item *page = [[Item alloc] initWithID:rowid name:[NSString stringWithFormat:@"%@ %i",CCLocalized("PAGE"),ordering] parent:rootItem uuid:uuid flags:0 type:3 ordering:ordering visible:YES];
+	
+	return page;
+}
+
 
 @end
