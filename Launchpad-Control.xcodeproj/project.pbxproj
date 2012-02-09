@@ -11,14 +11,14 @@
 		7D0BCE0F13FC50CC00545108 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D0BCE0D13FC50CC00545108 /* Item.m */; };
 		7D0D236113F6D10400A2A1FE /* donate.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D235F13F6D10400A2A1FE /* donate.png */; };
 		7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D236213F6F5BB00A2A1FE /* Icon.icns */; };
-		7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */; };
+		7D1D8F7E14D9F24400EC82BA /* LaunchpadControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */; };
 		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
 		7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1D8FB614D9FC9900EC82BA /* CCUtils.h */; };
 		7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1D8FB714D9FC9900EC82BA /* CCUtils.m */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
 		7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */; };
-		7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */; };
-		7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */; };
+		7D5DAA6713E1E9D800483A2F /* LaunchpadControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D5DAA6613E1E9D800483A2F /* LaunchpadControl.h */; };
+		7D5DAA6913E1E9D800483A2F /* LaunchpadControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5DAA6813E1E9D800483A2F /* LaunchpadControl.m */; };
 		7D5DAA7813E1EB4500483A2F /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */; };
 		7D63FBCC14A4887400518DD2 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D63FBCB14A4887400518DD2 /* twitter.png */; };
 		7D81203014DB2979005D5D37 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202E14DB2979005D5D37 /* Security.framework */; };
@@ -30,7 +30,7 @@
 		7D0BCE0D13FC50CC00545108 /* Item.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Item.m; sourceTree = "<group>"; };
 		7D0D235F13F6D10400A2A1FE /* donate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = donate.png; sourceTree = "<group>"; };
 		7D0D236213F6F5BB00A2A1FE /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
-		7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Launchpad_Control.xib; path = "Launchpad-Control/Launchpad_Control.xib"; sourceTree = SOURCE_ROOT; };
+		7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchpadControl.xib; path = "Launchpad-Control/LaunchpadControl.xib"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8214D9F2A500EC82BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "Launchpad-Control/en.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8414D9F2AB00EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8FB614D9FC9900EC82BA /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
@@ -43,8 +43,8 @@
 		7D5DAA5E13E1E9D800483A2F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7D5DAA6113E1E9D800483A2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7D5DAA6513E1E9D800483A2F /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Launchpad_Control.h; sourceTree = "<group>"; };
-		7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Launchpad_Control.m; sourceTree = "<group>"; };
+		7D5DAA6613E1E9D800483A2F /* LaunchpadControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaunchpadControl.h; sourceTree = "<group>"; };
+		7D5DAA6813E1E9D800483A2F /* LaunchpadControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LaunchpadControl.m; sourceTree = "<group>"; };
 		7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		7D63FBCB14A4887400518DD2 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
 		7D81202E14DB2979005D5D37 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -71,7 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				7D1D8F8114D9F2A500EC82BA /* Localizable.strings */,
-				7D1D8F7D14D9F24400EC82BA /* Launchpad_Control.xib */,
+				7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */,
 				7D0D236213F6F5BB00A2A1FE /* Icon.icns */,
 				7D63FBCB14A4887400518DD2 /* twitter.png */,
 				7D0D235F13F6D10400A2A1FE /* donate.png */,
@@ -132,8 +132,8 @@
 		7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */ = {
 			isa = PBXGroup;
 			children = (
-				7D5DAA6613E1E9D800483A2F /* Launchpad_Control.h */,
-				7D5DAA6813E1E9D800483A2F /* Launchpad_Control.m */,
+				7D5DAA6613E1E9D800483A2F /* LaunchpadControl.h */,
+				7D5DAA6813E1E9D800483A2F /* LaunchpadControl.m */,
 				7D0BCE0C13FC50CC00545108 /* Item.h */,
 				7D0BCE0D13FC50CC00545108 /* Item.m */,
 				7D0D235D13F6D10400A2A1FE /* Resources */,
@@ -158,7 +158,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D5DAA6713E1E9D800483A2F /* Launchpad_Control.h in Headers */,
+				7D5DAA6713E1E9D800483A2F /* LaunchpadControl.h in Headers */,
 				7D0BCE0E13FC50CC00545108 /* Item.h in Headers */,
 				7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */,
 			);
@@ -220,7 +220,7 @@
 				7D0D236113F6D10400A2A1FE /* donate.png in Resources */,
 				7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */,
 				7D63FBCC14A4887400518DD2 /* twitter.png in Resources */,
-				7D1D8F7E14D9F24400EC82BA /* Launchpad_Control.xib in Resources */,
+				7D1D8F7E14D9F24400EC82BA /* LaunchpadControl.xib in Resources */,
 				7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -242,7 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D5DAA6913E1E9D800483A2F /* Launchpad_Control.m in Sources */,
+				7D5DAA6913E1E9D800483A2F /* LaunchpadControl.m in Sources */,
 				7D0BCE0F13FC50CC00545108 /* Item.m in Sources */,
 				7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */,
 			);

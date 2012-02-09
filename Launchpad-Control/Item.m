@@ -6,29 +6,129 @@
 //  Copyright 2011 Andreas Ganske. All rights reserved.
 //
 
+#import "LaunchpadControl.h"
 #import "Item.h"
 
 @implementation Item
 
-@synthesize identifier,name,parent=_parent,children,uuid,flags,type,ordering,visible,bundleIdentifier,newOrder, newParent;
+@synthesize identifier = _identifier;
+
+@synthesize name = _name;
+@synthesize parent = _parent;
+@synthesize uuid = _uuid;
+@synthesize flags = _flags;
+@synthesize type = _type;
+@synthesize ordering = _ordering;
+@synthesize visible = _visible;
+@synthesize bundleIdentifier = _bundleIdentifier;
+@synthesize children;
+
+int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(id)initWithID:(NSInteger)anIdentifier name:(NSString *)aName parent:(Item *)aParent uuid:(NSString *)anUUID flags:(Byte)aFlags type:(Byte)aType ordering:(NSInteger)anOrdering visible:(BOOL)isVisible
 {
-	if ( (self = [super init]) ) {
+	if ( (self = [super init]) ) 
+	{
 		self.identifier = anIdentifier;
+		self.ordering = anOrdering;
 		self.name = aName;
-		self.parent = aParent;
 		self.uuid = anUUID;
 		self.flags = aFlags;
 		self.type = aType;
-		self.ordering = anOrdering;
 		self.visible = isVisible;
-		self.newOrder = NO;
-		self.newParent = NO;
 		
-		self.children = [NSMutableArray array];
+		self.children = [[NSMutableArray alloc] init];
+		self.parent = aParent;
 	}
+	
 	return self;
+}
+
+-(void)setVisible:(BOOL)isVisible
+{
+	[self setVisible:isVisible updateDatabase:NO];
+}
+
+-(void)setVisible:(BOOL)isVisible updateDatabase:(BOOL)updateDatabase
+{
+	if (updateDatabase) {
+		bool success;
+		if (isVisible) {
+			success = [[LaunchpadControl shared] addIgnoredBundle:_bundleIdentifier];
+		}else{
+			success = [[LaunchpadControl shared] removeIgnoredBundle:_bundleIdentifier];
+		}
+		
+		if (success) {
+			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", _identifier * (isVisible ? 1 : -1), _identifier];
+			[[LaunchpadControl shared] executeSQL:sqlQuery];
+			
+			_visible = isVisible;
+		}
+	}else{
+		_visible = isVisible;
+	}
+}
+	
+-(void)setOrdering:(NSInteger)anOrdering
+{
+	[self setOrdering:anOrdering updateDatabase:NO];
+}
+
+-(void)setOrdering:(NSInteger)anOrdering updateDatabase:(BOOL)updateDatabase
+{
+	_ordering = anOrdering;
+	
+	if (updateDatabase) {
+		NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET ordering = %i WHERE ABS(rowid) = %i;", self.ordering, self.identifier];
+		[[LaunchpadControl shared] executeSQL:sqlQuery];
+	}
+}
+
+-(void)setParent:(Item *)aParent
+{
+	[self setParent:aParent updateDatabase:NO];
+}
+
+-(void)setParent:(Item *)aParent updateDatabase:(BOOL)updateDatabase
+{
+	if (aParent == _parent)
+		return;
+	
+	if (_parent)
+		[_parent removeChild:self];
+	
+	[_parent release];
+	_parent = [aParent retain];
+	[_parent addChild:self];
+	
+	if (updateDatabase) {
+		NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [self.parent identifier], self.identifier];
+		[[LaunchpadControl shared] executeSQL:sqlQuery];
+	}
+}
+
+-(void)updateChildren
+{
+	NSSortDescriptor* sortOrder = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+	[self.children sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
+	
+	/*
+	[self.children sortUsingComparator:(NSComparator)^(id a, id b){
+		NSInteger aOrdering = [a ordering];
+		NSInteger bOrdering = [b ordering];
+		
+		if (aOrdering>bOrdering)
+			return NSOrderedDescending;
+		else if(aOrdering<bOrdering)
+			return NSOrderedAscending;
+		else
+			return NSOrderedSame;
+		
+	}];
+	
+	childrenReference = self.children;
+	*/
 }
 
 -(void)addChild:(Item *)item
@@ -36,35 +136,19 @@
 	[children addObject:item];
 }
 
--(void)setParent:(Item *)aParent
+-(void)removeChild:(Item *)item
 {
-	_parent = aParent;
-	
-	if (_parent)
-		[_parent addChild:self];
+	[children removeObject:item];
 }
 
 -(NSString *)description
 {
-	return name; //[NSString stringWithFormat:@"%@ (%i)",name,ordering];
-}
-
--(BOOL)isVisible
-{
-	if (parent)
-		return [parent isVisible] && visible;
-	
-	return visible;
+	return [NSString stringWithFormat:@"%@ (%i)",self.name,self.ordering];
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder
 {
-	[aCoder encodeInt64:identifier forKey:@"identifier"];
-	[aCoder encodeObject:name forKey:@"name"];
-	[aCoder encodeInt64:parent.identifier forKey:@"parent"];
-	[aCoder encodeObject:uuid forKey:@"uuid"];
-	[aCoder encodeBool:visible forKey:@"visible"];
-	[aCoder encodeObject:children forKey:@"children"];
+	[aCoder encodeInt64:_identifier forKey:@"identifier"];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder

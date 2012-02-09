@@ -15,37 +15,34 @@ enum kItemType {
 	kItemApp = 4
 };
 
-@interface Item : NSObject <NSCoding> {
-	NSInteger identifier;
-	NSString *name;
-	Item *parent;
-	
-	NSMutableArray *children;
-	
-	NSString *uuid;
-	NSInteger flags;
-	NSInteger type;
-	NSInteger ordering;
-	BOOL visible;
-}
+int signum(int n);
 
--(id)initWithID:(NSInteger)anIdentifier name:(NSString *)aName parent:(Item *)aParent uuid:(NSString *)anUUID flags:(Byte)aFlags type:(Byte)aType ordering:(NSInteger)anOrdering visible:(BOOL)isVisible;
--(void)addChild:(Item *)item;
--(BOOL)isVisible;
+@interface Item : NSObject <NSCoding>
+
+#pragma mark - Attributes
 
 @property (nonatomic) NSInteger identifier;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) Item *parent;
 @property (nonatomic, retain) NSMutableArray *children;
 @property (nonatomic, retain) NSString *uuid;
-@property (nonatomic) NSInteger flags;
-@property (nonatomic) NSInteger type;
+@property (nonatomic) Byte flags;
+@property (nonatomic) Byte type;
 @property (nonatomic) NSInteger ordering;
 @property (nonatomic) BOOL visible;
 
-@property (nonatomic) BOOL newOrder;
-@property (nonatomic) BOOL newParent;
-
 @property (nonatomic, retain) NSString *bundleIdentifier;
+
+#pragma mark - Methods
+
+-(id)initWithID:(NSInteger)anIdentifier name:(NSString *)aName parent:(Item *)aParent uuid:(NSString *)anUUID flags:(Byte)aFlags type:(Byte)aType ordering:(NSInteger)anOrdering visible:(BOOL)isVisible;
+
+-(void)setVisible:(BOOL)visible updateDatabase:(BOOL)updateDatabase;
+-(void)setOrdering:(NSInteger)ordering updateDatabase:(BOOL)updateDatabase;
+-(void)setParent:(Item *)parent updateDatabase:(BOOL)updateDatabase;
+
+-(void)addChild:(Item *)item;
+-(void)removeChild:(Item *)item;
+-(void)updateChildren;
 
 @end
