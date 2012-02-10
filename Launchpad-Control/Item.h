@@ -37,7 +37,7 @@ int signum(int n);
 
 -(id)initWithID:(NSInteger)anIdentifier name:(NSString *)aName parent:(Item *)aParent uuid:(NSString *)anUUID flags:(Byte)aFlags type:(Byte)aType ordering:(NSInteger)anOrdering visible:(BOOL)isVisible;
 
--(void)setVisible:(BOOL)visible updateDatabase:(BOOL)updateDatabase;
+-(BOOL)setVisible:(BOOL)visible updateDatabase:(BOOL)updateDatabase;
 -(void)setOrdering:(NSInteger)ordering updateDatabase:(BOOL)updateDatabase;
 -(void)setParent:(Item *)parent updateDatabase:(BOOL)updateDatabase;
 

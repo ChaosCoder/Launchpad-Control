@@ -49,7 +49,7 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 	[self setVisible:isVisible updateDatabase:NO];
 }
 
--(void)setVisible:(BOOL)isVisible updateDatabase:(BOOL)updateDatabase
+-(BOOL)setVisible:(BOOL)isVisible updateDatabase:(BOOL)updateDatabase
 {
 	if (updateDatabase) {
 		bool success;
@@ -65,9 +65,13 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 			
 			_visible = isVisible;
 		}
+		
+		return success;
 	}else{
 		_visible = isVisible;
 	}
+	
+	return true;
 }
 	
 -(void)setOrdering:(NSInteger)anOrdering

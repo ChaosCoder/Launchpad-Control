@@ -213,10 +213,10 @@ static id _shared = nil;
 -(void)setVisible:(BOOL)visible forItem:(Item *)item
 {
 	//changedData = YES;
-	[item setVisible:visible updateDatabase:YES];
-	
-	for (Item *child in [item children]) {
-		[self setVisible:visible forItem:child];
+	if([item setVisible:visible updateDatabase:YES]) {
+		for (Item *child in [item children]) {
+			[self setVisible:visible forItem:child];
+		}
 	}
 }
 
@@ -771,21 +771,32 @@ END;"];
 			child.ordering--;
 	}
 	
-	[draggedItem setParent:parentItem updateDatabase:YES];
-	[draggedItem setOrdering:dropRow+(draggedItem.type == kItemPage ? 1 : 0) updateDatabase:YES];
-	
-	for (Item *child in [[draggedItem parent] children]) {
-		if (child == draggedItem) continue;
+	if (dropRow>=0) {
+		[draggedItem setParent:parentItem updateDatabase:YES];
+		[draggedItem setOrdering:dropRow+(draggedItem.type == kItemPage ? 1 : 0) updateDatabase:YES];
 		
-		if (child.ordering>=draggedItem.ordering)
-			child.ordering++;
+		for (Item *child in [[draggedItem parent] children]) {
+			if (child == draggedItem) continue;
+			
+			if (child.ordering>=draggedItem.ordering)
+				child.ordering++;
+		}
+		
+		[parentItem updateChildren];
+		
+		[self updatePages];
+	}else{ // dropped an app on an app
+		NSString *groupName = [self input:[NSString stringWithFormat:CCLocalized("You are about to merge two apps (%@ and %@) in to a new group.\nPlease type in the group's name."),[draggedItem name],[parentItem name]] defaultValue:@""];
+		Item *group = [self createNewGroup:groupName onPage:[parentItem parent] withOrdering:[parentItem ordering]];
+		[parentItem setParent:group updateDatabase:YES];
+		[draggedItem setParent:group updateDatabase:YES];
+		[parentItem setOrdering:0];
+		[draggedItem setOrdering:1];
+		
+		[[group parent] updateChildren];
 	}
 	
-	[parentItem updateChildren];
-	
 	[draggedItem release];
-	
-	[self updatePages];
 	
 	[outlineView noteNumberOfRowsChanged];
 	[outlineView reloadData];
@@ -841,6 +852,28 @@ END;"];
 	return uuidString;
 }
 
+-(NSString *)input:(NSString *)prompt defaultValue:(NSString *)defaultValue {
+	NSAlert *alert = [NSAlert alertWithMessageText:prompt
+									 defaultButton:CCLocalized("Okay")
+								   alternateButton:CCLocalized("Cancel")
+									   otherButton:nil
+						 informativeTextWithFormat:@""];
+	
+	NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 200, 24)];
+	[input setStringValue:defaultValue];
+	[alert setAccessoryView:input];
+	NSInteger button = [alert runModal];
+	if (button == NSAlertDefaultReturn) {
+		[input validateEditing];
+		return [input stringValue];
+	} else if (button == NSAlertAlternateReturn) {
+		return nil;
+	} else {
+		NSAssert1(NO, @"Invalid input dialog button %d", button);
+		return nil;
+	}
+}
+
 -(Item *)createNewPage {
 	NSString *uuid = [self generateUUIDString];
 	NSInteger ordering = [[rootItem children] count];
@@ -857,6 +890,24 @@ END;"];
 	Item *page = [[Item alloc] initWithID:rowid name:[NSString stringWithFormat:@"%@ %i",CCLocalized("PAGE"),ordering] parent:rootItem uuid:uuid flags:0 type:3 ordering:(int)ordering visible:YES];
 	
 	return page;
+}
+
+-(Item *)createNewGroup:(NSString *)title onPage:(Item *)page withOrdering:(NSInteger)ordering
+{
+	NSString *uuid = [self generateUUIDString];
+	
+	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,2,%i,%i);", uuid, [page identifier], ordering];
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	
+	NSInteger rowid = sqlite3_last_insert_rowid(db);
+	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,'%@');", rowid, title];
+	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	
+	Item *group = [[Item alloc] initWithID:rowid name:title parent:page uuid:uuid flags:0 type:2 ordering:ordering visible:YES];
+	
+	return group;
 }
 
 -(void)executeSQL:(NSString *)sqlQuery
