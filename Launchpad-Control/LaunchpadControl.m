@@ -853,7 +853,7 @@ END;"];
 	
 	[item setParent:nil];
 	
-	NSString *sqlQuery = [NSString stringWithFormat:@"DELETE FROM items WHERE rowid=@i;", item.identifier];
+	NSString *sqlQuery = [NSString stringWithFormat:@"DELETE FROM items WHERE rowid=%i;", item.identifier];
 	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
 	sqlite3_exec(db, sql, NULL, NULL, NULL);
 }
