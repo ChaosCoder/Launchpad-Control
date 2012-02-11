@@ -103,12 +103,15 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 		[_parent removeChild:self];
 	
 	[_parent release];
-	_parent = [aParent retain];
-	[_parent addChild:self];
 	
-	if (updateDatabase) {
-		NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [self.parent identifier], self.identifier];
-		[[LaunchpadControl shared] executeSQL:sqlQuery];
+	if (aParent) {
+		_parent = [aParent retain];
+		[_parent addChild:self];
+		
+		if (updateDatabase) {
+			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [self.parent identifier], self.identifier];
+			[[LaunchpadControl shared] executeSQL:sqlQuery];
+		}
 	}
 }
 
@@ -116,23 +119,6 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 {
 	NSSortDescriptor* sortOrder = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
 	[self.children sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
-	
-	/*
-	[self.children sortUsingComparator:(NSComparator)^(id a, id b){
-		NSInteger aOrdering = [a ordering];
-		NSInteger bOrdering = [b ordering];
-		
-		if (aOrdering>bOrdering)
-			return NSOrderedDescending;
-		else if(aOrdering<bOrdering)
-			return NSOrderedAscending;
-		else
-			return NSOrderedSame;
-		
-	}];
-	
-	childrenReference = self.children;
-	*/
 }
 
 -(void)addChild:(Item *)item

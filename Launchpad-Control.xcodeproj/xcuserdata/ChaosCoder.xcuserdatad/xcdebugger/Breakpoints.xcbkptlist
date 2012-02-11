@@ -64,20 +64,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "Launchpad-Control/LaunchpadControl.m"
-         timestampString = "350083691.526025"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "767"
-         endingLineNumber = "767"
-         landmarkName = "-outlineView:acceptDrop:item:childIndex:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
          filePath = "Launchpad-Control/Item.m"
          timestampString = "350501987.996972"
          startingColumnNumber = "9223372036854775807"
@@ -121,40 +107,12 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Launchpad-Control/Item.m"
-         timestampString = "350501987.996972"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "104"
-         endingLineNumber = "104"
-         landmarkName = "-setParent:updateDatabase:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Launchpad-Control/Item.m"
          timestampString = "350501977.394324"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "55"
          endingLineNumber = "55"
          landmarkName = "-setVisible:updateDatabase:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Launchpad-Control/LaunchpadControl.m"
-         timestampString = "350562575.016328"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "774"
-         endingLineNumber = "774"
-         landmarkName = "-outlineView:acceptDrop:item:childIndex:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

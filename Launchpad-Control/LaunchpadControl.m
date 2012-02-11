@@ -137,7 +137,7 @@ static id _shared = nil;
 
 -(BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
-	return [[item children] count]>0;
+	return [(Item *)item type]==2 || [(Item *)item type]==3;
 }
 
 -(NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
@@ -758,20 +758,26 @@ END;"];
 	
 	[draggedItem retain];
 	
-	if ([draggedItem parent] == parentItem) {
-		if (dragRow < dropRow) {
-			dropRow--;
-		}
-	}
-	
-	for (Item *child in [[draggedItem parent] children]) {
-		if (child == draggedItem) continue;
+	if (dropRow>=0 || [(Item *)parentItem type] == kItemGroup) 
+	{
+		if (dropRow<0)
+			dropRow = 0;
 		
-		if (child.ordering>=draggedItem.ordering)
-			child.ordering--;
-	}
-	
-	if (dropRow>=0) {
+		if ([draggedItem parent] == parentItem) {
+			if (dragRow < dropRow) {
+				dropRow--;
+			}
+		}
+		
+		for (Item *child in [[draggedItem parent] children]) {
+			if (child == draggedItem) continue;
+			
+			if (child.ordering>=draggedItem.ordering)
+				child.ordering--;
+		}
+		
+		Item *oldParent = [draggedItem parent];
+		
 		[draggedItem setParent:parentItem updateDatabase:YES];
 		[draggedItem setOrdering:dropRow+(draggedItem.type == kItemPage ? 1 : 0) updateDatabase:YES];
 		
@@ -782,18 +788,50 @@ END;"];
 				child.ordering++;
 		}
 		
+		if ([[oldParent children] count]==0) {
+			NSString *itemType = oldParent.type==kItemGroup?@"group":@"page";
+			if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:CCLocalized("Empty %@!"),itemType] 
+								 defaultButton:CCLocalized("Yes") 
+							   alternateButton:CCLocalized("No") 
+								   otherButton:nil
+					 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized("You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"), itemType, [oldParent name],[draggedItem name], itemType]] runModal])
+			{
+				[self removeItem:oldParent];
+			}
+		}
+		
 		[parentItem updateChildren];
 		
 		[self updatePages];
 	}else{ // dropped an app on an app
-		NSString *groupName = [self input:[NSString stringWithFormat:CCLocalized("You are about to merge two apps (%@ and %@) in to a new group.\nPlease type in the group's name."),[draggedItem name],[parentItem name]] defaultValue:@""];
-		Item *group = [self createNewGroup:groupName onPage:[parentItem parent] withOrdering:[parentItem ordering]];
-		[parentItem setParent:group updateDatabase:YES];
-		[draggedItem setParent:group updateDatabase:YES];
-		[parentItem setOrdering:0];
-		[draggedItem setOrdering:1];
+		NSString *groupName = [self input:[NSString stringWithFormat:CCLocalized("You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"),[draggedItem name],[parentItem name]] defaultValue:@""];
 		
-		[[group parent] updateChildren];
+		if (groupName) {
+			groupName = [groupName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			if ([groupName isNotEqualTo:@""]) 
+			{
+				if ([draggedItem parent] == parentItem) {
+					if (dragRow < dropRow) {
+						dropRow--;
+					}
+				}
+				
+				for (Item *child in [[draggedItem parent] children]) {
+					if (child == draggedItem) continue;
+					
+					if (child.ordering>=draggedItem.ordering)
+						child.ordering--;
+				}
+				
+				Item *group = [self createNewGroup:groupName onPage:[parentItem parent] withOrdering:[parentItem ordering]];
+				[parentItem setParent:group updateDatabase:YES];
+				[draggedItem setParent:group updateDatabase:YES];
+				[parentItem setOrdering:0];
+				[draggedItem setOrdering:1];
+				
+				[[group parent] updateChildren];
+			}
+		}
 	}
 	
 	[draggedItem release];
@@ -802,6 +840,22 @@ END;"];
 	[outlineView reloadData];
 		
 	return YES;
+}
+
+-(void)removeItem:(Item *)item
+{
+	for (Item *child in [[item parent] children]) {
+		if (child == item) continue;
+		
+		if (child.ordering>=item.ordering)
+			child.ordering--;
+	}
+	
+	[item setParent:nil];
+	
+	NSString *sqlQuery = [NSString stringWithFormat:@"DELETE FROM items WHERE rowid=@i;", item.identifier];
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
 }
 
 -(void)updatePages
@@ -874,7 +928,8 @@ END;"];
 	}
 }
 
--(Item *)createNewPage {
+-(Item *)createNewPage 
+{
 	NSString *uuid = [self generateUUIDString];
 	NSInteger ordering = [[rootItem children] count];
 	
