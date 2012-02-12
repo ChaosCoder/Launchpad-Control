@@ -546,15 +546,14 @@ static id _shared = nil;
 		sqlString = [NSString stringWithFormat:@"UPDATE dbinfo SET value='%@' WHERE key='launchpad-control'",currentVersion];
 	}
 	
-	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	[self executeSQL:sqlString];
 }
 
 -(void)dropTriggers
 {
 	NSString *sqlString = [NSString stringWithFormat:@"DROP TRIGGER insert_item; DROP TRIGGER item_deleted; DROP TRIGGER update_item_parent; DROP TRIGGER update_items_order; DROP TRIGGER update_items_order_backwards;"];
-	const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
+	
+	[self executeSQL:sqlString];
 }
 	
 -(void)createTriggers
@@ -562,37 +561,37 @@ static id _shared = nil;
 	NSString *sqlString = [NSString stringWithFormat:@"CREATE TRIGGER insert_item AFTER INSERT on items WHEN 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
 BEGIN \n\
 UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
-UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE ABS(parent_id)=ABS(new.parent_id)) WHERE ROWID=new.rowid; \n\
+UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE parent_id=new.parent_id) WHERE ABS(rowid)=ABS(new.rowid); \n\
 UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
 END; \n\
 \n\
 CREATE TRIGGER item_deleted AFTER DELETE ON items \n\
 BEGIN \n\
-DELETE FROM apps WHERE rowid=old.rowid; \n\
-DELETE FROM groups WHERE item_id=old.rowid; \n\
-DELETE FROM downloading_apps WHERE item_id=old.rowid; \n\
-UPDATE items SET ordering = ordering - 1 WHERE ABS(old.parent_id) = ABS(parent_id) AND ordering > old.ordering; \n\
+DELETE FROM apps WHERE ABS(rowid)=ABS(old.rowid); \n\
+DELETE FROM groups WHERE ABS(item_id)=ABS(old.rowid); \n\
+DELETE FROM downloading_apps WHERE ABS(item_id)=ABS(old.rowid); \n\
+UPDATE items SET ordering = ordering - 1 WHERE old.parent_id = parent_id AND ordering > old.ordering; \n\
 END; \n\
 \n\
 CREATE TRIGGER update_item_parent AFTER UPDATE OF parent_id ON items \n\
 BEGIN \n\
 UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
-UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE ABS(parent_id)=ABS(new.parent_id) AND ROWID!=old.rowid) WHERE ROWID=old.rowid; \n\
-UPDATE items SET ordering = ordering - 1 WHERE ABS(parent_id) = ABS(old.parent_id) and ordering > old.ordering; \n\
+UPDATE items SET ordering = (SELECT ifnull(MAX(ordering),0)+1 FROM items WHERE parent_id=new.parent_id AND ABS(ROWID)!=ABS(old.rowid)) WHERE ABS(ROWID)=ABS(old.rowid); \n\
+UPDATE items SET ordering = ordering - 1 WHERE parent_id = old.parent_id and ordering > old.ordering; \n\
 UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
 END; \n\
 \n\
 CREATE TRIGGER update_items_order BEFORE UPDATE OF ordering ON items WHEN new.ordering > old.ordering AND 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
 BEGIN \n\
 UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
-UPDATE items SET ordering = ordering - 1 WHERE ABS(parent_id) = ABS(old.parent_id) AND ordering BETWEEN old.ordering and new.ordering; \n\
+UPDATE items SET ordering = ordering - 1 WHERE parent_id = old.parent_id AND ordering BETWEEN old.ordering and new.ordering; \n\
 UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
 END; \n\
 \n\
 CREATE TRIGGER update_items_order_backwards BEFORE UPDATE OF ordering ON items WHEN new.ordering < old.ordering AND 0 == (SELECT value FROM dbinfo WHERE key='ignore_items_update_triggers') \n\
 BEGIN \n\
 UPDATE dbinfo SET value=1 WHERE key='ignore_items_update_triggers'; \n\
-UPDATE items SET ordering = ordering + 1 WHERE ABS(parent_id) = ABS(old.parent_id) AND ordering BETWEEN new.ordering and old.ordering; \n\
+UPDATE items SET ordering = ordering + 1 WHERE parent_id = old.parent_id AND ordering BETWEEN new.ordering and old.ordering; \n\
 UPDATE dbinfo SET value=0 WHERE key='ignore_items_update_triggers'; \n\
 END;"];
 	
