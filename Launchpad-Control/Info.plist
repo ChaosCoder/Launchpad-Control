@@ -21,12 +21,12 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2011 Andreas Ganske. All rights reserved.</string>
 	<key>NSMainNibFile</key>
-	<string>Launchpad_Control</string>
+	<string>LaunchpadControl</string>
 	<key>NSPrefPaneIconFile</key>
 	<string>Icon.icns</string>
 	<key>NSPrefPaneIconLabel</key>
 	<string>Launchpad</string>
 	<key>NSPrincipalClass</key>
-	<string>Launchpad_Control</string>
+	<string>LaunchpadControl</string>
 </dict>
 </plist>

@@ -7,43 +7,74 @@
 //
 
 #import <PreferencePanes/PreferencePanes.h>
-#import <sqlite3.h>
-#import "Item.h"
-#import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFAuthorizationView.h>
+#import <sqlite3.h>
 
-@interface LaunchpadControl : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate> {
+@class Item;
+
+@interface LaunchpadControl : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate> 
+{
+	Item *rootItem;
+	NSMutableArray *items;
+	
+	Item *draggedItem;
+	
+	sqlite3 *db;
 	NSString *databasePath;
 	NSString *databaseBackupPath;
 	
-	NSOutlineView *tableView;
-	
-	NSButton *updateButton;
-	NSButton *donateButton;
-	NSButton *tweetButton;
-	
-	NSButton *refreshButton;
-	NSButton *resetButton;
-	
-	NSButton *applyButton;
-	
-	NSTextFieldCell *currentVersionField;
-	
-	Item *rootItem;
-    NSMutableArray *items;
-	
 	BOOL dbOpened;
 	BOOL changedData;
+	
 	NSMutableDictionary *plist;
 	NSMutableArray *ignoredBundles;
 	
 	NSMutableData *receivedData;
-	
-	Item *draggedItem;
-	IBOutlet SFAuthorizationView *authView;
-	
-	sqlite3 *db;
 }
+
+#pragma mark - Properties
+#pragma mark - Outlets - Labels
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *titleFieldCell;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *currentVersionField;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *helpFieldCell;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *descriptionFieldCell;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *authorFieldCell;
+
+#pragma mark - Outlets - Labels - Sidebar
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *allItemsFieldCell;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *selectedItemFieldCell;
+@property (nonatomic, weak) IBOutlet NSTextFieldCell *databaseFieldCell;
+
+#pragma mark - Outlets - Buttons
+@property (nonatomic, weak) IBOutlet NSButton *updateButton;
+@property (nonatomic, weak) IBOutlet NSButton *helpButton;
+@property (nonatomic, weak) IBOutlet NSButton *tweetButton;
+@property (nonatomic, weak) IBOutlet NSButton *donateButton;
+
+@property (nonatomic, weak) IBOutlet NSButton *applyButton;
+
+#pragma mark - Outlets - Sidebar-Buttons
+
+#pragma mark All Items
+@property (nonatomic, weak) IBOutlet NSButton *refreshButton;
+@property (nonatomic, weak) IBOutlet NSButton *sortAllButton;
+
+#pragma mark Selected Item
+@property (nonatomic, weak) IBOutlet NSButton *renameItemButton;
+@property (nonatomic, weak) IBOutlet NSButton *sortItemButton;
+@property (nonatomic, weak) IBOutlet NSButton *removeItemButton;
+
+#pragma mark Database
+@property (nonatomic, weak) IBOutlet NSButton *backupDatabaseButton;
+@property (nonatomic, weak) IBOutlet NSButton *restoreDatabaseButton;
+@property (nonatomic, weak) IBOutlet NSButton *resetDatabaseButton;
+
+#pragma mark - Outlets - Other Views
+@property (nonatomic, weak) IBOutlet NSOutlineView *tableView;
+@property (nonatomic, weak) IBOutlet SFAuthorizationView *authView;
+
+
+#pragma mark - Methods
 
 +(id)shared;
 
@@ -51,16 +82,12 @@
 -(void)mainViewDidLoad;
 -(void)loadPlist;
 -(void)reload;
+-(void)setupRights;
+-(void)migrateFrom:(NSString *)version;
 
+#pragma mark - Database
 -(BOOL)openDatabase;
 -(void)closeDatabase;
-
--(BOOL)fetchItems;
--(void)setVisible:(BOOL)visible forItem:(Item *)item;
-
--(void)setupRights;
--(void)applySettings;
--(void)restartDock;
 
 -(void)refreshDatabase;
 -(void)removeDatabase;
@@ -73,27 +100,21 @@
 -(void)dropTriggers;
 -(void)createTriggers;
 
--(void)migrateFrom:(NSString *)version;
-
--(IBAction)buttonPressed:(id)sender;
+-(BOOL)fetchItems;
 
 -(void)executeSQL:(NSString *)sqlQuery;
+
+#pragma mark - Item actions
+-(void)setVisible:(BOOL)visible forItem:(Item *)item;
+
 -(BOOL)addIgnoredBundle:(NSString *)bundleIdentifier;
 -(BOOL)removeIgnoredBundle:(NSString *)bundleIdentifier;
 
-@property (nonatomic, weak) IBOutlet NSOutlineView *tableView;
+#pragma mark - Actions
+-(IBAction)buttonPressed:(id)sender;
 
-@property (nonatomic, weak) IBOutlet NSTextFieldCell *descriptionFieldCell;
-
-@property (nonatomic, weak) IBOutlet NSButton *updateButton;
-@property (nonatomic, weak) IBOutlet NSButton *donateButton;
-@property (nonatomic, weak) IBOutlet NSButton *tweetButton;
-
-@property (nonatomic, weak) IBOutlet NSButton *resetButton;
-
-@property (nonatomic, weak) IBOutlet NSButton *refreshButton;
-@property (nonatomic, weak) IBOutlet NSButton *applyButton;
-
-@property (nonatomic, weak) IBOutlet NSTextFieldCell *currentVersionField;
+#pragma mark - System Control
+-(void)restartLaunchpad;
+-(void)restartDock;
 
 @end

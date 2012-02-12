@@ -7,9 +7,24 @@
 //
 
 #import "LaunchpadControl.h"
+#import "Item.h"
 #import "CCUtils.h"
 
 @implementation LaunchpadControl
+@synthesize allItemsFieldCell;
+@synthesize selectedItemFieldCell;
+@synthesize databaseFieldCell;
+@synthesize authView;
+@synthesize backupDatabaseButton;
+@synthesize restoreDatabaseButton;
+@synthesize sortAllButton;
+@synthesize renameItemButton;
+@synthesize sortItemButton;
+@synthesize removeItemButton;
+@synthesize titleFieldCell;
+@synthesize authorFieldCell;
+@synthesize helpFieldCell;
+@synthesize helpButton;
 
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources/LaunchPadLayout.plist";
 static NSString *plistTemporaryPath = @"/tmp/LaunchPadLayout.plist";
@@ -22,7 +37,7 @@ static id _shared = nil;
 
 #define MyPrivateTableViewDataType @"MyPrivateTableViewDataType"
 
-@synthesize tableView, donateButton, tweetButton, updateButton, resetButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
+@synthesize tableView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 #pragma mark Loading
 
@@ -40,13 +55,13 @@ static id _shared = nil;
 	return _shared;
 }
 
-- (void)mainViewDidLoad
+-(void)mainViewDidLoad
 {
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
 	[tableView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
 	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
-	[resetButton setTitle:CCLocalized("Reset")];
+	[resetDatabaseButton setTitle:CCLocalized("Reset")];
 	[refreshButton setTitle:CCLocalized("Refresh")];
 	[applyButton setTitle:CCLocalized("Apply")];
 	[currentVersionField setTitle:[NSString stringWithFormat:@"v%@",currentVersion]];
@@ -419,8 +434,8 @@ static id _shared = nil;
 	}else if (sender == refreshButton) {
 		[self refreshDatabase];
 	}else if (sender == applyButton) {
-		[self applySettings];
-	}else if (sender == resetButton) {
+		[self restartLaunchpad];
+	}else if (sender == resetDatabaseButton) {
 		[self removeDatabase];
 	}else if (sender == donateButton) {
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
@@ -453,54 +468,10 @@ static id _shared = nil;
 	return true;
 }
 
--(void)applySettings
+-(void)restartLaunchpad
 {
-/*
-	NSMutableArray *sqlQueries = [NSMutableArray array];
-	bool oldChangedData = changedData;
-	changedData = NO;
-	for (Item *item in items) {
-		if (item == rootItem)
-			continue;
-		
-		[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", [item identifier] * ([item visible] ? 1 : -1), [item identifier]]];
-		
-		if (item.newParent)
-			[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [[item parent] identifier], [item identifier]]];
-		
-		if (item.newOrder)
-			[sqlQueries addObject:[NSString stringWithFormat:@"UPDATE items SET ordering = %i WHERE ABS(rowid) = %i;", [item ordering], [item identifier]]];
-		
-		item.newParent = NO;
-		item.newOrder = NO;
-		
-		if (item.type==kItemApp && item.bundleIdentifier && [item.bundleIdentifier isNotEqualTo:@""]) {
-			if ([item visible]) {
-				[ignoredBundles removeObject:item.bundleIdentifier];
-			}else if(![ignoredBundles containsObject:item.bundleIdentifier]){
-				[ignoredBundles addObject:item.bundleIdentifier];
-			}
-		}
-	}
-	
-	[plist writeToFile:plistTemporaryPath atomically:YES];
-	
-	if([self movePlistWithRights]) 
-	{
-		for (NSString *sqlQuery in sqlQueries) {
-			const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-			sqlite3_exec(db, sql, NULL, NULL, NULL);
-		}
-		
-		
-	}else{
-		changedData = oldChangedData;
-	}
- */
-	
 	[self restartDock];
 	[self reload];
-	
 }
 
 -(void)restartDock
@@ -673,7 +644,7 @@ END;"];
 							   otherButton:nil
 				 informativeTextWithFormat:CCLocalized("You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
 		{
-			[self applySettings];
+			[self restartLaunchpad];
 		}else{
 			[self reload];
 		}
