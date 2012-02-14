@@ -44,6 +44,28 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 	return self;
 }
 
+-(void)setName:(NSString *)aName
+{
+	[self setName:aName updateDatabase:NO];
+}
+
+-(void)setName:(NSString *)aName updateDatabase:(BOOL)updateDatabase
+{
+	_name = [aName retain];
+	
+	if (updateDatabase) {
+		NSString *sqlString = nil;
+		if (_type == kItemApp) {
+			sqlString = [NSString stringWithFormat:@"UPDATE apps SET title='%@' WHERE item_id=%i",_name,_identifier];
+		}else if(_type == kItemGroup) {
+			sqlString = [NSString stringWithFormat:@"UPDATE groups SET title='%@' WHERE item_id=%i",_name,_identifier];
+		}
+		
+		if (sqlString)
+			[[LaunchpadControl shared] executeSQL:sqlString];
+	}
+}
+
 -(void)setVisible:(BOOL)isVisible
 {
 	[self setVisible:isVisible updateDatabase:NO];
@@ -60,7 +82,7 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 		}
 		
 		if (success) {
-			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i;", _identifier * (isVisible ? 1 : -1), _identifier];
+			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i", _identifier * (isVisible ? 1 : -1), _identifier];
 			[[LaunchpadControl shared] executeSQL:sqlQuery];
 			
 			_visible = isVisible;
@@ -119,6 +141,24 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 {
 	NSSortDescriptor* sortOrder = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
 	[self.children sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
+}
+
+-(void)sortChildrenAlphabetically:(BOOL)recursive
+{
+	if ([children count]>0) {
+		NSSortDescriptor* sortOrder = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)] autorelease];
+		[self.children sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
+		
+		int i = 0;
+		for (Item *child in children) 
+		{
+			[child setOrdering:i updateDatabase:YES];
+			i++;
+			
+			if (recursive)
+				[child sortChildrenAlphabetically:recursive];
+		}
+	}
 }
 
 -(void)addChild:(Item *)item

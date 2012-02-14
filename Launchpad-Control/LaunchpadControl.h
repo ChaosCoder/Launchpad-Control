@@ -62,7 +62,6 @@
 #pragma mark Selected Item
 @property (nonatomic, weak) IBOutlet NSButton *renameItemButton;
 @property (nonatomic, weak) IBOutlet NSButton *sortItemButton;
-@property (nonatomic, weak) IBOutlet NSButton *removeItemButton;
 
 #pragma mark Database
 @property (nonatomic, weak) IBOutlet NSButton *backupDatabaseButton;
@@ -70,7 +69,7 @@
 @property (nonatomic, weak) IBOutlet NSButton *resetDatabaseButton;
 
 #pragma mark - Outlets - Other Views
-@property (nonatomic, weak) IBOutlet NSOutlineView *tableView;
+@property (nonatomic, weak) IBOutlet NSOutlineView *outlineView;
 @property (nonatomic, weak) IBOutlet SFAuthorizationView *authView;
 
 

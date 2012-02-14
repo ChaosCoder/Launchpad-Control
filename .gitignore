@@ -1,8 +1,6 @@
 .gitignore
 *.DS_Store
-
 Launchpad-Control.xcodeproj/project.xcworkspace/*
 Launchpad-Control.xcodeproj/xcuserdata/*
 Launchpad-Control/LaunchpadControl.xib
-
 Launchpad-Control.xcodeproj/xcuserdata/ChaosCoder.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist

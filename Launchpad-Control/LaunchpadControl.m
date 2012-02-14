@@ -20,7 +20,6 @@
 @synthesize sortAllButton;
 @synthesize renameItemButton;
 @synthesize sortItemButton;
-@synthesize removeItemButton;
 @synthesize titleFieldCell;
 @synthesize authorFieldCell;
 @synthesize helpFieldCell;
@@ -40,7 +39,7 @@ static id _shared = nil;
 
 #define MyPrivateTableViewDataType @"MyPrivateTableViewDataType"
 
-@synthesize tableView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
+@synthesize outlineView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 #pragma mark Loading
 
@@ -61,7 +60,7 @@ static id _shared = nil;
 -(void)mainViewDidLoad
 {
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
-	[tableView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
+	[outlineView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
 	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
 	[resetDatabaseButton setTitle:CCLocalized("Reset")];
@@ -222,15 +221,21 @@ static id _shared = nil;
 	return nil;
 }
 
--(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+-(void)setSidebarItemActionsEnabled:(BOOL)enabled forItem:(Item *)item
 {
-	[self setVisible:[object boolValue] forItem:(Item *)item];
-	[tableView reloadItem:item reloadChildren:YES];
+	[sortItemButton setEnabled:enabled && [[item children] count]>0];
+	[renameItemButton setEnabled:enabled];
+	[removeItemButton setEnabled:enabled];
+}
+
+-(void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
+	[self setSidebarItemActionsEnabled:item!=nil forItem:item];
 }
 
 -(void)setVisible:(BOOL)visible forItem:(Item *)item
 {
-	//changedData = YES;
 	if([item setVisible:visible updateDatabase:YES]) {
 		for (Item *child in [item children]) {
 			[self setVisible:visible forItem:child];
@@ -448,6 +453,12 @@ static id _shared = nil;
 		[self backupDatabase];
 	}else if (sender == restoreDatabaseButton) {
 		[self restoreDatabase];
+	}else if (sender == sortAllButton) {
+		[self sortAllItems];
+	}else if (sender == sortItemButton) {
+		[self sortSelectedItem];
+	}else if (sender == renameItemButton) {
+		[self renameSelectedItem];
 	}
 }
 
@@ -684,10 +695,10 @@ END;"];
 {
 	[self checkDatabase];
 	[self fetchItems];
-	[tableView reloadData];
+	[outlineView reloadData];
 	
 	for (Item *child in [rootItem children]) {
-		[tableView expandItem:child expandChildren:NO];
+		[outlineView expandItem:child expandChildren:NO];
 	}
 	
 	changedData = NO;
@@ -1119,6 +1130,38 @@ END;"];
 		 informativeTextWithFormat:CCLocalized("The database was successfully restored and loaded.")] runModal];
 	
 	return true;
+}
+
+-(void)sortAllItems
+{
+	for (Item *item in [rootItem children]) {
+		[item sortChildrenAlphabetically:YES];
+	}
+	[self reload];
+}
+
+-(void)sortSelectedItem
+{
+	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
+	[item sortChildrenAlphabetically:NO];
+	
+	[self reload];
+}
+
+-(void)renameSelectedItem
+{
+	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
+	
+	NSString *itemName = [self input:[NSString stringWithFormat:CCLocalized("You are about to rename '%@'.\nPlease type in the new name:"),[item name]] defaultValue:[item name]];
+	
+	if (itemName) {
+		itemName = [itemName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		if ([itemName isNotEqualTo:@""]) 
+		{
+			[item setName:itemName updateDatabase:YES];
+			[self reload];
+		}
+	}
 }
 
 @end
