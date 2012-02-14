@@ -225,7 +225,6 @@ static id _shared = nil;
 {
 	[sortItemButton setEnabled:enabled && [[item children] count]>0];
 	[renameItemButton setEnabled:enabled];
-	[removeItemButton setEnabled:enabled];
 }
 
 -(void)outlineViewSelectionDidChange:(NSNotification *)notification
