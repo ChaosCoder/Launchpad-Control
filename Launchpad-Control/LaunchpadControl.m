@@ -26,8 +26,11 @@
 @synthesize helpFieldCell;
 @synthesize helpButton;
 
-static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources/LaunchPadLayout.plist";
-static NSString *plistTemporaryPath = @"/tmp/LaunchPadLayout.plist";
+static NSString *zipContentsPath = @"/tmp/lcbackup/";
+static NSString *databaseFileName = @"database.db";
+static NSString *plistFileName = @"LaunchPadLayout.plist";
+static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources";
+static NSString *plistTemporaryPath = @"/tmp";
 static NSString *currentVersion;
 
 static NSInteger maximumItemsPerPage = 40;
@@ -102,7 +105,7 @@ static id _shared = nil;
 
 -(void)loadPlist
 {
-	plist = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+	plist = [NSMutableDictionary dictionaryWithContentsOfFile:[plistPath stringByAppendingPathComponent:plistFileName]];
 	ignoredBundles = [plist objectForKey:@"ignore"];
 }
 
@@ -441,6 +444,10 @@ static id _shared = nil;
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
 	}else if (sender == tweetButton) {
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:CCLocalized("http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control")]];
+	}else if (sender == backupDatabaseButton) {
+		[self backupDatabase];
+	}else if (sender == restoreDatabaseButton) {
+		[self restoreDatabase];
 	}
 }
 
@@ -448,7 +455,7 @@ static id _shared = nil;
 {
 	NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-c"];
-	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",plistTemporaryPath,plistPath]];
+	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",[plistTemporaryPath stringByAppendingPathComponent:plistFileName],[plistPath stringByAppendingPathComponent:plistFileName]]];
 	// Convert array into void-* array.
 	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
 	int argvIndex = 0;
@@ -948,7 +955,7 @@ END;"];
 	
 	[ignoredBundles addObject:bundleIdentifier];
 
-	[plist writeToFile:plistTemporaryPath atomically:YES];
+	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
 
 	return [self movePlistWithRights];
 }
@@ -960,10 +967,158 @@ END;"];
 	
 	[ignoredBundles removeObject:bundleIdentifier];
 	
-	[plist writeToFile:plistTemporaryPath atomically:YES];
+	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
 	
 	return [self movePlistWithRights];
+}
 
+-(BOOL)backupDatabase
+{	
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
+	
+	NSInteger savePanelResult	= [savePanel runModal];
+	
+	if(savePanelResult == NSOKButton)
+	{
+		NSURL *directoryURL = [savePanel directoryURL];
+		NSURL *fileURL = [savePanel URL];
+		
+		NSError *error = nil;
+		
+		@try 
+		{
+			[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+			[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
+			
+			if(![[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if(![[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (![[NSFileManager defaultManager] copyItemAtPath:[plistPath stringByAppendingPathComponent:plistFileName] 
+													toPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] 
+													 error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (![[NSFileManager defaultManager] copyItemAtPath:databasePath 
+													toPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] 
+													 error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			NSTask *task = [[NSTask alloc] init];
+			[task setCurrentDirectoryPath:zipContentsPath];
+			[task setLaunchPath:@"/usr/bin/zip"];
+			NSArray *argsArray = [NSArray arrayWithObjects:[fileURL lastPathComponent], plistFileName, @"lp.db", nil];
+			[task setArguments:argsArray];
+			[task launch];
+			[task waitUntilExit];
+			
+			NSURL *temporaryFileURL = [NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:[fileURL lastPathComponent]]];
+			
+			if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
+				if(![[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error] || error)
+					[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			}
+			
+			if(![[NSFileManager defaultManager] moveItemAtURL:temporaryFileURL toURL:fileURL error:&error] || error) 
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+		}@catch (NSException *exception) {
+			[[NSAlert alertWithMessageText:CCLocalized("Error") 
+							 defaultButton:CCLocalized("Okay") 
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:[exception reason]] runModal];
+			return false;
+		}
+	}else{
+		return false;
+	}
+	
+	[[NSAlert alertWithMessageText:CCLocalized("Backup successfully") 
+					 defaultButton:CCLocalized("Okay") 
+				   alternateButton:nil
+					   otherButton:nil
+		 informativeTextWithFormat:CCLocalized("The backup was successfully created and saved.")] runModal];
+	
+	return true;
+}
+
+-(BOOL)restoreDatabase
+{
+	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+	[openPanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
+	
+	NSInteger openPanelResult = [openPanel runModal];
+	
+	if (openPanelResult == NSOKButton) 
+	{
+		NSURL *fileURL = [openPanel URL];
+		NSString *fileName = [fileURL lastPathComponent];
+		
+		NSError *error = nil;
+		
+		@try
+		{
+			if ([[fileURL pathExtension] isEqualToString:@"lcb"]) 
+			{
+				[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+				[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
+				
+				[[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:[NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:fileName]] error:&error];
+				
+				if (error)
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+				
+				NSTask *task = [[NSTask alloc] init];
+				[task setCurrentDirectoryPath:zipContentsPath];
+				[task setLaunchPath:@"/usr/bin/unzip"];
+				NSArray *argsArray = [NSArray arrayWithObject:fileName];
+				[task setArguments:argsArray];
+				[task launch];
+				[task waitUntilExit];
+				
+				[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] toPath:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] error:&error];
+				if (!error && [self movePlistWithRights]) {
+					[[NSFileManager defaultManager] removeItemAtPath:databaseBackupPath error:&error];
+					[[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:databaseBackupPath error:&error];
+					[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] toPath:databasePath error:&error];
+					
+					[self closeDatabase];
+					[self openDatabase];
+					[self reload];
+					
+					if (error)
+						[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+					
+				}else if(error){
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+				}else{
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("You have to grant this application admin rights to be able to restore the database.")];
+				}
+			}
+		}@catch (NSException *exception) {
+			[[NSAlert alertWithMessageText:CCLocalized("Error") 
+							 defaultButton:CCLocalized("Okay") 
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:[exception reason]] runModal];
+			return false;
+		}
+	}
+	
+	[[NSAlert alertWithMessageText:CCLocalized("Restore successfully") 
+					 defaultButton:CCLocalized("Okay") 
+				   alternateButton:nil
+					   otherButton:nil
+		 informativeTextWithFormat:CCLocalized("The database was successfully restored and loaded.")] runModal];
+	
+	return true;
 }
 
 @end
