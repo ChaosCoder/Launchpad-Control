@@ -105,6 +105,9 @@
 
 #pragma mark - Item actions
 -(void)setVisible:(BOOL)visible forItem:(Item *)item;
+-(void)sortAllItems;
+-(void)sortSelectedItem;
+-(void)renameSelectedItem;
 
 -(BOOL)addIgnoredBundle:(NSString *)bundleIdentifier;
 -(BOOL)removeIgnoredBundle:(NSString *)bundleIdentifier;
