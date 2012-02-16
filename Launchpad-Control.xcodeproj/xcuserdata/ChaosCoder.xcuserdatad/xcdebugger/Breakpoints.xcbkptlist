@@ -92,34 +92,6 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "Launchpad-Control/LaunchpadControl.m"
-         timestampString = "350919274.943051"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "989"
-         endingLineNumber = "989"
-         landmarkName = "-backupDatabase"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Launchpad-Control/LaunchpadControl.m"
-         timestampString = "350919274.943051"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1066"
-         endingLineNumber = "1066"
-         landmarkName = "-restoreDatabase"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
          filePath = "Launchpad-Control/Item.m"
          timestampString = "350919274.943051"
          startingColumnNumber = "9223372036854775807"

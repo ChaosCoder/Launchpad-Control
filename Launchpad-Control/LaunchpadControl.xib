@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">11D50b</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
 		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1938</string>
+			<string key="NS.object.0">2177</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSScroller</string>
@@ -149,6 +149,7 @@
 							<string key="NSFrame">{{391, 13}, {268, 17}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:3936</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="462767928">
@@ -190,7 +191,9 @@
 							<object class="NSTextFieldCell" key="NSCell" id="439352445">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">205520896</int>
-								<string type="base64-UTF8" key="NSContents">REVTQ1JJUFRJT04KREVTQ1JJUFRJT04</string>
+								<string type="base64-UTF8" key="NSContents">VGhpcyBhcHAgYWxsb3dzIHlvdSB0byBlYXNpbHkgaGlkZS91bmhpZGUgYW5kIHJlb3JkZXIgYXBwcyBp
+biBMYXVuY2hwYWQuCkZvciBhIGRldGFpbGVkIGluc3RydWN0aW9uIHBsZWFzZSBjbGljayB0aGUgIkhl
+bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 								<object class="NSFont" key="NSSupport" id="1050818511">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">13</double>
@@ -322,7 +325,7 @@
 											<string key="NSFrameSize">{501, 342}</string>
 											<reference key="NSSuperview" ref="549480046"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="913586616"/>
+											<reference key="NSNextKeyView" ref="740118422"/>
 											<string key="NSReuseIdentifierKey">_NS:1071</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="_NSCornerView" key="NSCornerView">
@@ -443,7 +446,7 @@
 							<string key="NSFrame">{{12, 39}, {501, 344}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="549480046"/>
+							<reference key="NSNextKeyView" ref="913586616"/>
 							<string key="NSReuseIdentifierKey">_NS:1067</string>
 							<int key="NSsFlags">133778</int>
 							<reference key="NSVScroller" ref="740118422"/>
@@ -533,7 +536,7 @@
 							<string key="NSFrame">{{516, 197}, {147, 32}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
+							<reference key="NSNextKeyView" ref="26394254"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="100170229">
@@ -1471,7 +1474,6 @@
 						<string key="helpFieldCell">NSTextFieldCell</string>
 						<string key="outlineView">NSOutlineView</string>
 						<string key="refreshButton">NSButton</string>
-						<string key="removeItemButton">NSButton</string>
 						<string key="renameItemButton">NSButton</string>
 						<string key="resetDatabaseButton">NSButton</string>
 						<string key="restoreDatabaseButton">NSButton</string>
@@ -1533,10 +1535,6 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="refreshButton">
 							<string key="name">refreshButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="removeItemButton">
-							<string key="name">removeItemButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="renameItemButton">

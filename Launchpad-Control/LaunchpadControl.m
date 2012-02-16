@@ -41,7 +41,12 @@ static id _shared = nil;
 
 @synthesize outlineView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
-#pragma mark Loading
++(id)shared
+{
+	return _shared;
+}
+
+#pragma mark Load
 
 -(id)initWithBundle:(NSBundle *)bundle
 {
@@ -52,20 +57,15 @@ static id _shared = nil;
 	return self;
 }
 
-+(id)shared
-{
-	return _shared;
-}
-
 -(void)mainViewDidLoad
 {
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
 	[outlineView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
-	[descriptionFieldCell setTitle:CCLocalized("This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'.")];
-	[resetDatabaseButton setTitle:CCLocalized("Reset")];
-	[refreshButton setTitle:CCLocalized("Refresh")];
-	[applyButton setTitle:CCLocalized("Apply")];
+	[descriptionFieldCell setTitle:CCLocalized(@"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top.")];
+	[resetDatabaseButton setTitle:CCLocalized(@"Reset")];
+	[refreshButton setTitle:CCLocalized(@"Refresh")];
+	[applyButton setTitle:CCLocalized(@"Apply")];
 	[currentVersionField setTitle:[NSString stringWithFormat:@"v%@",currentVersion]];
 	
 	items = [[NSMutableArray alloc] init];
@@ -88,9 +88,48 @@ static id _shared = nil;
     [authView updateStatus:nil];
 }
 
-//
-// SFAuthorization delegates
-//
+-(void)loadPlist
+{
+	plist = [NSMutableDictionary dictionaryWithContentsOfFile:[plistPath stringByAppendingPathComponent:plistFileName]];
+	ignoredBundles = [plist objectForKey:@"ignore"];
+}
+
+#pragma mark - Button actions
+
+-(IBAction)buttonPressed:(id)sender
+{
+	if (sender == updateButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
+	}else if (sender == refreshButton) {
+		[self refreshDatabase];
+	}else if (sender == applyButton) {
+		[self restartLaunchpad];
+	}else if (sender == resetDatabaseButton) {
+		[self removeDatabase];
+	}else if (sender == donateButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
+	}else if (sender == tweetButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:CCLocalized(@"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control")]];
+	}else if (sender == backupDatabaseButton) {
+		[self backupDatabase];
+	}else if (sender == restoreDatabaseButton) {
+		[self restoreDatabase];
+	}else if (sender == sortAllButton) {
+		[self sortAllItems];
+	}else if (sender == sortItemButton) {
+		[self sortSelectedItem];
+	}else if (sender == renameItemButton) {
+		[self renameSelectedItem];
+	}
+}
+
+-(void)setSidebarItemActionsEnabled:(BOOL)enabled forItem:(Item *)item
+{
+	[sortItemButton setEnabled:enabled && [[item children] count]>0];
+	[renameItemButton setEnabled:enabled];
+}
+
+#pragma mark - SFAuthorizationView Delegate
 
 - (BOOL)isUnlocked {
     return [authView authorizationState] == SFAuthorizationViewUnlockedState;
@@ -102,11 +141,7 @@ static id _shared = nil;
 - (void)authorizationViewDidDeauthorize:(SFAuthorizationView *)view {
 }
 
--(void)loadPlist
-{
-	plist = [NSMutableDictionary dictionaryWithContentsOfFile:[plistPath stringByAppendingPathComponent:plistFileName]];
-	ignoredBundles = [plist objectForKey:@"ignore"];
-}
+#pragma mark - automatic updates
 
 -(void)checkForUpdates
 {
@@ -135,14 +170,14 @@ static id _shared = nil;
 	NSString *newVersionString = [[NSString alloc] initWithData:receivedData encoding:NSASCIIStringEncoding];
 	
 	if ([newVersionString floatValue] > [currentVersion floatValue]) {
-		[updateButton setTitle:[NSString stringWithFormat:CCLocalized("Get v%@ now!"),newVersionString]];
+		[updateButton setTitle:[NSString stringWithFormat:CCLocalized(@"Get v%@ now!"),newVersionString]];
 		[updateButton setHidden:NO];
 		
-		if ([[NSAlert alertWithMessageText:CCLocalized("Get v%@ now!")
-							 defaultButton:CCLocalized("Download")
-						   alternateButton:CCLocalized("Later")
+		if ([[NSAlert alertWithMessageText:CCLocalized(@"Get v%@ now!")
+							 defaultButton:CCLocalized(@"Download")
+						   alternateButton:CCLocalized(@"Later")
 							   otherButton:nil 
-				 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized("Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top."),newVersionString,currentVersion]] runModal])
+				 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized(@"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top."),newVersionString,currentVersion]] runModal])
 		{
 			[self buttonPressed:updateButton];
 		}
@@ -151,6 +186,8 @@ static id _shared = nil;
     [connection release];
     [receivedData release];
 }
+
+#pragma mark - NSOutlineView delegate and data source methods
 
 -(BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
@@ -221,26 +258,139 @@ static id _shared = nil;
 	return nil;
 }
 
--(void)setSidebarItemActionsEnabled:(BOOL)enabled forItem:(Item *)item
-{
-	[sortItemButton setEnabled:enabled && [[item children] count]>0];
-	[renameItemButton setEnabled:enabled];
-}
-
 -(void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
 	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
 	[self setSidebarItemActionsEnabled:item!=nil forItem:item];
 }
 
--(void)setVisible:(BOOL)visible forItem:(Item *)item
+#pragma mark Drag'n'Drop
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)_items toPasteboard:(NSPasteboard *)pasteboard
 {
-	if([item setVisible:visible updateDatabase:YES]) {
-		for (Item *child in [item children]) {
-			[self setVisible:visible forItem:child];
+	// Copy the row numbers to the pasteboard.
+	//NSData *zNSIndexSetData = [NSKeyedArchiver archivedDataWithRootObject:_items];
+	//[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
+	//[pasteboard setData:zNSIndexSetData forType:MyPrivateTableViewDataType];
+	//[pasteboard declareTypes:MyPrivateTableViewDataType owner:self ];
+	
+	draggedItem = [_items objectAtIndex:0];
+	
+	NSData *itemData = [NSKeyedArchiver archivedDataWithRootObject:draggedItem];
+	[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
+	[pasteboard setData:itemData forType:MyPrivateTableViewDataType];
+	
+	return YES;
+}
+
+-(NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+{
+	if (draggedItem.type == kItemPage && item) // Page not in Root
+		return NO;
+	
+	if (draggedItem.type == kItemGroup && [(Item *)item type]!=kItemPage) // Group not in Page
+		return NO;
+	
+	if (draggedItem.type == kItemApp && [(Item *)item type]==kItemGroup && [[(Item *)item children] count]>=maximumItemsPerGroup) // App in full group
+		return NO;
+	
+	return NSDragOperationMove;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)_outlineView acceptDrop:(id<NSDraggingInfo>)info item:(Item *)parentItem childIndex:(NSInteger)dropRow 
+{
+	if (parentItem == nil) 
+		parentItem = rootItem;
+	
+	NSInteger dragRow = [[[draggedItem parent] children] indexOfObject:draggedItem];
+	
+	[draggedItem retain];
+	
+	if (dropRow>=0 || [(Item *)parentItem type] == kItemGroup) 
+	{
+		if (dropRow<0)
+			dropRow = 0;
+		
+		if ([draggedItem parent] == parentItem) {
+			if (dragRow < dropRow) {
+				dropRow--;
+			}
+		}
+		
+		for (Item *child in [[draggedItem parent] children]) {
+			if (child == draggedItem) continue;
+			
+			if (child.ordering>=draggedItem.ordering)
+				child.ordering--;
+		}
+		
+		Item *oldParent = [draggedItem parent];
+		
+		[draggedItem setParent:parentItem updateDatabase:YES];
+		[draggedItem setOrdering:dropRow+(draggedItem.type == kItemPage ? 1 : 0) updateDatabase:YES];
+		
+		for (Item *child in [[draggedItem parent] children]) {
+			if (child == draggedItem) continue;
+			
+			if (child.ordering>=draggedItem.ordering)
+				child.ordering++;
+		}
+		
+		if ([[oldParent children] count]==0) {
+			NSString *itemType = oldParent.type==kItemGroup?@"group":@"page";
+			if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:CCLocalized(@"Empty %@!"),itemType] 
+								 defaultButton:CCLocalized(@"Yes") 
+							   alternateButton:CCLocalized(@"No") 
+								   otherButton:nil
+					 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized(@"You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"), itemType, [oldParent name],[draggedItem name], itemType]] runModal])
+			{
+				[self removeItem:oldParent];
+			}
+		}
+		
+		[parentItem updateChildren];
+		
+		[self updatePages];
+	}else{ // dropped an app on an app
+		NSString *groupName = [self input:[NSString stringWithFormat:CCLocalized(@"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"),[draggedItem name],[parentItem name]] defaultValue:@""];
+		
+		if (groupName) {
+			groupName = [groupName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			if ([groupName isNotEqualTo:@""]) 
+			{
+				if ([draggedItem parent] == parentItem) {
+					if (dragRow < dropRow) {
+						dropRow--;
+					}
+				}
+				
+				for (Item *child in [[draggedItem parent] children]) {
+					if (child == draggedItem) continue;
+					
+					if (child.ordering>=draggedItem.ordering)
+						child.ordering--;
+				}
+				
+				Item *group = [self createNewGroup:groupName onPage:[parentItem parent] withOrdering:[parentItem ordering]];
+				[parentItem setParent:group updateDatabase:YES];
+				[draggedItem setParent:group updateDatabase:YES];
+				[parentItem setOrdering:0];
+				[draggedItem setOrdering:1];
+				
+				[[group parent] updateChildren];
+			}
 		}
 	}
+	
+	[draggedItem release];
+	
+	[outlineView noteNumberOfRowsChanged];
+	[outlineView reloadData];
+	
+	return YES;
 }
+
+#pragma mark - Database
 
 -(BOOL)openDatabase
 {	
@@ -253,7 +403,7 @@ static id _shared = nil;
 		NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:&error];
 		
 		if (error || !files || [files count]==0)
-			[NSException raise:@"DatabaseNotFoundException" format:CCLocalized("Could not find any database file for Launchpad.")];
+			[NSException raise:@"DatabaseNotFoundException" format:CCLocalized(@"Could not find any database file for Launchpad.")];
 		
 		
 		//check if file is already there
@@ -269,7 +419,7 @@ static id _shared = nil;
 				}
 				
 				if (error)
-					[NSException raise:@"CouldNotCreateBackupException" format:CCLocalized("Could not backup original Launchpad database.~nBe careful!")];
+					[NSException raise:@"CouldNotCreateBackupException" format:CCLocalized(@"Could not backup original Launchpad database.~nBe careful!")];
 				
 				if([fileManager fileExistsAtPath:databasePath])
 				{
@@ -284,14 +434,14 @@ static id _shared = nil;
 					}
 				}
 				
-				[NSException raise:@"CannotOpenDatabaseException" format:CCLocalized("Could not open the database file for Launchpad.")];
+				[NSException raise:@"CannotOpenDatabaseException" format:CCLocalized(@"Could not open the database file for Launchpad.")];
 			}
 		}
 		
-		[NSException raise:@"DatabaseNotFoundException" format:CCLocalized("Could not find any database file for Launchpad.")];
+		[NSException raise:@"DatabaseNotFoundException" format:CCLocalized(@"Could not find any database file for Launchpad.")];
 	}
 	@catch (NSException *exception) {
-		[[NSAlert alertWithMessageText:CCLocalized("Error") defaultButton:CCLocalized("Okay") alternateButton:nil otherButton:nil informativeTextWithFormat:[exception reason]] runModal];
+		[[NSAlert alertWithMessageText:CCLocalized(@"Error") defaultButton:CCLocalized(@"Okay") alternateButton:nil otherButton:nil informativeTextWithFormat:[exception reason]] runModal];
 		return NO;
 	}
 }
@@ -345,7 +495,7 @@ static id _shared = nil;
 					if ([uuid isEqualToString:@"HOLDINGPAGE"])
 						continue;
 					else
-						name = [CCLocalized("PAGE") stringByAppendingFormat:@" %i",++pageCount];
+						name = [CCLocalized(@"PAGE") stringByAppendingFormat:@" %i",++pageCount];
 					break;
 					
 				case kItemApp:
@@ -410,6 +560,10 @@ static id _shared = nil;
 			
 			if (rowid == 1)
 				rootItem = item;
+			
+			if (type==kItemApp && rowid<0 && ![ignoredBundles containsObject:bundleID]) {
+				[self addIgnoredBundle:bundleID];
+			}
 		}
 	}
 	sqlite3_finalize(statement);
@@ -434,53 +588,151 @@ static id _shared = nil;
 	sqlite3_finalize(statement);
 }
 
--(IBAction)buttonPressed:(id)sender
-{
-	if (sender == updateButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
-	}else if (sender == refreshButton) {
-		[self refreshDatabase];
-	}else if (sender == applyButton) {
-		[self restartLaunchpad];
-	}else if (sender == resetDatabaseButton) {
-		[self removeDatabase];
-	}else if (sender == donateButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
-	}else if (sender == tweetButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:CCLocalized("http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control")]];
-	}else if (sender == backupDatabaseButton) {
-		[self backupDatabase];
-	}else if (sender == restoreDatabaseButton) {
-		[self restoreDatabase];
-	}else if (sender == sortAllButton) {
-		[self sortAllItems];
-	}else if (sender == sortItemButton) {
-		[self sortSelectedItem];
-	}else if (sender == renameItemButton) {
-		[self renameSelectedItem];
+-(BOOL)backupDatabase
+{	
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
+	
+	NSInteger savePanelResult	= [savePanel runModal];
+	
+	if(savePanelResult == NSOKButton)
+	{
+		NSURL *directoryURL = [savePanel directoryURL];
+		NSURL *fileURL = [savePanel URL];
+		
+		NSError *error = nil;
+		
+		@try 
+		{
+			[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+			[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
+			
+			if(![[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if(![[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (![[NSFileManager defaultManager] copyItemAtPath:[plistPath stringByAppendingPathComponent:plistFileName] 
+														 toPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] 
+														  error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (![[NSFileManager defaultManager] copyItemAtPath:databasePath 
+														 toPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] 
+														  error:&error] || error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			NSTask *task = [[NSTask alloc] init];
+			[task setCurrentDirectoryPath:zipContentsPath];
+			[task setLaunchPath:@"/usr/bin/zip"];
+			NSArray *argsArray = [NSArray arrayWithObjects:[fileURL lastPathComponent], plistFileName, @"lp.db", nil];
+			[task setArguments:argsArray];
+			[task launch];
+			[task waitUntilExit];
+			
+			NSURL *temporaryFileURL = [NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:[fileURL lastPathComponent]]];
+			
+			if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
+				if(![[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error] || error)
+					[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			}
+			
+			if(![[NSFileManager defaultManager] moveItemAtURL:temporaryFileURL toURL:fileURL error:&error] || error) 
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+			if (error)
+				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized(@"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+			
+		}@catch (NSException *exception) {
+			[[NSAlert alertWithMessageText:CCLocalized(@"Error") 
+							 defaultButton:CCLocalized(@"Okay") 
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:[exception reason]] runModal];
+			return false;
+		}
+	}else{
+		return false;
 	}
+	
+	[[NSAlert alertWithMessageText:CCLocalized(@"Backup successfully") 
+					 defaultButton:CCLocalized(@"Okay") 
+				   alternateButton:nil
+					   otherButton:nil
+		 informativeTextWithFormat:CCLocalized(@"The backup was successfully created and saved.")] runModal];
+	
+	return true;
 }
 
--(BOOL)movePlistWithRights
+-(BOOL)restoreDatabase
 {
-	NSMutableArray *args = [NSMutableArray array];
-	[args addObject:@"-c"];
-	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",[plistTemporaryPath stringByAppendingPathComponent:plistFileName],[plistPath stringByAppendingPathComponent:plistFileName]]];
-	// Convert array into void-* array.
-	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
-	int argvIndex = 0;
-	for (NSString *string in args) {
-		argv[argvIndex] = [string UTF8String];
-		argvIndex++;
+	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+	[openPanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
+	
+	NSInteger openPanelResult = [openPanel runModal];
+	
+	if (openPanelResult == NSOKButton) 
+	{
+		NSURL *fileURL = [openPanel URL];
+		NSString *fileName = [fileURL lastPathComponent];
+		
+		NSError *error = nil;
+		
+		@try
+		{
+			if ([[fileURL pathExtension] isEqualToString:@"lcb"]) 
+			{
+				[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+				[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
+				
+				[[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:[NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:fileName]] error:&error];
+				
+				if (error)
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized(@"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+				
+				NSTask *task = [[NSTask alloc] init];
+				[task setCurrentDirectoryPath:zipContentsPath];
+				[task setLaunchPath:@"/usr/bin/unzip"];
+				NSArray *argsArray = [NSArray arrayWithObject:fileName];
+				[task setArguments:argsArray];
+				[task launch];
+				[task waitUntilExit];
+				
+				[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] toPath:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] error:&error];
+				if (!error && [self movePlistWithRights]) {
+					[[NSFileManager defaultManager] removeItemAtPath:databaseBackupPath error:&error];
+					[[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:databaseBackupPath error:&error];
+					[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] toPath:databasePath error:&error];
+					
+					[self closeDatabase];
+					[self openDatabase];
+					[self reload];
+					
+					if (error)
+						[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized(@"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+					
+				}else if(error){
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized(@"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
+				}else{
+					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized(@"You have to grant this application admin rights to be able to restore the database.")];
+				}
+			}
+		}@catch (NSException *exception) {
+			[[NSAlert alertWithMessageText:CCLocalized(@"Error") 
+							 defaultButton:CCLocalized(@"Okay") 
+						   alternateButton:nil
+							   otherButton:nil
+				 informativeTextWithFormat:[exception reason]] runModal];
+			return false;
+		}
 	}
-	argv[argvIndex] = nil;
 	
-	OSErr processError = AuthorizationExecuteWithPrivileges([[authView authorization] authorizationRef], [@"/bin/sh" UTF8String],
-															kAuthorizationFlagDefaults, (char *const *)argv, nil);
-	free(argv);
-	
-	if (processError != errAuthorizationSuccess)
-		return false;
+	[[NSAlert alertWithMessageText:CCLocalized(@"Restore successfully") 
+					 defaultButton:CCLocalized(@"Okay") 
+				   alternateButton:nil
+					   otherButton:nil
+		 informativeTextWithFormat:CCLocalized(@"The database was successfully restored and loaded.")] runModal];
 	
 	return true;
 }
@@ -498,29 +750,29 @@ static id _shared = nil;
 
 -(void)removeDatabase
 {
-	if ([[NSAlert alertWithMessageText:CCLocalized("Are you sure?") 
-						 defaultButton:CCLocalized("Yes") 
-					   alternateButton:CCLocalized("No") 
+	if ([[NSAlert alertWithMessageText:CCLocalized(@"Are you sure?") 
+						 defaultButton:CCLocalized(@"Yes") 
+					   alternateButton:CCLocalized(@"No") 
 						   otherButton:nil 
-			 informativeTextWithFormat:CCLocalized("A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.")] runModal])
+			 informativeTextWithFormat:CCLocalized(@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
 		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
-		if ([[NSAlert alertWithMessageText:CCLocalized("Do you want Launchpad-Control to load the new database?") 
-						defaultButton:CCLocalized("Yes") 
-					  alternateButton:CCLocalized("No") 
+		if ([[NSAlert alertWithMessageText:CCLocalized(@"Do you want Launchpad-Control to load the new database?") 
+						defaultButton:CCLocalized(@"Yes") 
+					  alternateButton:CCLocalized(@"No") 
 						  otherButton:nil 
-				 informativeTextWithFormat:CCLocalized("If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself.")] runModal]) 
+				 informativeTextWithFormat:CCLocalized(@"If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself.")] runModal]) 
 		{
 			while (![self openDatabase]) {
-				if ([[NSAlert alertWithMessageText:CCLocalized("Could not find any database.") 
-									 defaultButton:CCLocalized("Refresh") 
-								   alternateButton:CCLocalized("Quit") 
+				if ([[NSAlert alertWithMessageText:CCLocalized(@"Could not find any database.") 
+									 defaultButton:CCLocalized(@"Refresh") 
+								   alternateButton:CCLocalized(@"Quit") 
 									   otherButton:nil 
-						 informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.")] runModal]) {
+						 informativeTextWithFormat:CCLocalized(@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some time press 'Quit'.")] runModal]) {
 				}else{
 					[[NSApplication sharedApplication] terminate:self];
 				}
@@ -618,29 +870,29 @@ END;"];
 
 -(void)databaseIsCorrupt
 {
-	if ([[NSAlert alertWithMessageText:CCLocalized("Corrupt database detected!") 
-						 defaultButton:CCLocalized("Okay") 
-					   alternateButton:CCLocalized("Cancel") 
+	if ([[NSAlert alertWithMessageText:CCLocalized(@"Corrupt database detected!") 
+						 defaultButton:CCLocalized(@"Okay") 
+					   alternateButton:CCLocalized(@"Cancel") 
 						   otherButton:nil 
-			 informativeTextWithFormat:CCLocalized("Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.")] runModal])
+			 informativeTextWithFormat:CCLocalized(@"Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
 		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
-		[[NSAlert alertWithMessageText:CCLocalized("Refreshing database...") 
-						defaultButton:CCLocalized("Okay") 
+		[[NSAlert alertWithMessageText:CCLocalized(@"Refreshing database...") 
+						defaultButton:CCLocalized(@"Okay") 
 					  alternateButton:nil 
 						  otherButton:nil 
-			informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database.")] runModal];
+			informativeTextWithFormat:CCLocalized(@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Okay'. Launchpad-Control will then reload the new database.")] runModal];
 		
 		while (![self openDatabase]) {
-			if ([[NSAlert alertWithMessageText:CCLocalized("Could not find any database.") 
-								 defaultButton:CCLocalized("Refresh") 
-							   alternateButton:CCLocalized("Quit") 
+			if ([[NSAlert alertWithMessageText:CCLocalized(@"Could not find any database.") 
+								 defaultButton:CCLocalized(@"Refresh") 
+							   alternateButton:CCLocalized(@"Quit") 
 								   otherButton:nil 
-					 informativeTextWithFormat:CCLocalized("Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'.")] runModal]) {
+					 informativeTextWithFormat:CCLocalized(@"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'.")] runModal]) {
 			}else{
 				[[NSApplication sharedApplication] terminate:self];
 			}
@@ -654,11 +906,11 @@ END;"];
 -(void)refreshDatabase
 {
 	if (changedData) {
-		if ([[NSAlert alertWithMessageText:CCLocalized("Unsaved changes!") 
-							 defaultButton:CCLocalized("Apply") 
-						   alternateButton:CCLocalized("Refresh") 
+		if ([[NSAlert alertWithMessageText:CCLocalized(@"Unsaved changes!") 
+							 defaultButton:CCLocalized(@"Apply") 
+						   alternateButton:CCLocalized(@"Refresh") 
 							   otherButton:nil
-				 informativeTextWithFormat:CCLocalized("You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
+				 informativeTextWithFormat:CCLocalized(@"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
 		{
 			[self restartLaunchpad];
 		}else{
@@ -672,13 +924,16 @@ END;"];
 -(void)migrateFrom:(NSString *)oldVersion
 {
 	if ([oldVersion isEqualToString:@"1.3"]) {
-		//[self dropTriggers];
-		//[self createTriggers];
+		[self dropTriggers];
+		[self createTriggers];
 	}else if([oldVersion isEqualToString:@"1.4"]) {
-		NSString *sqlString = [NSString stringWithFormat: @"UPDATE items SET rowid=ABS(rowid), parent_id=ABS(parent_id) WHERE parent_id>0; \n\
+		NSString *sqlString = [NSString stringWithFormat: @"UPDATE items SET rowid=ABS(rowid), parent_id=ABS(parent_id) WHERE parent_id>0;\n\
 															UPDATE items SET rowid=-ABS(rowid), parent_id=ABS(parent_id) WHERE parent_id<0;"];
 		const char *sql = [sqlString cStringUsingEncoding:NSUTF8StringEncoding];
 		sqlite3_exec(db, sql, NULL, NULL, NULL);
+		
+		[self dropTriggers];
+		[self createTriggers];
 	}
 	
 	[self setDatabaseVersion];
@@ -703,130 +958,96 @@ END;"];
 	changedData = NO;
 }
 
-#pragma mark - Reodering
-
-- (BOOL)outlineView:(NSOutlineView *)outlineView writeItems:(NSArray *)_items toPasteboard:(NSPasteboard *)pasteboard
+-(Item *)createNewPage 
 {
-	// Copy the row numbers to the pasteboard.
-	//NSData *zNSIndexSetData = [NSKeyedArchiver archivedDataWithRootObject:_items];
-	//[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
-	//[pasteboard setData:zNSIndexSetData forType:MyPrivateTableViewDataType];
-	//[pasteboard declareTypes:MyPrivateTableViewDataType owner:self ];
+	NSString *uuid = [self generateUUIDString];
+	NSInteger ordering = [[rootItem children] count];
 	
-	draggedItem = [_items objectAtIndex:0];
+	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,3,%i,%i);", uuid, [rootItem identifier], ordering];
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
 	
-	NSData *itemData = [NSKeyedArchiver archivedDataWithRootObject:draggedItem];
-	[pasteboard declareTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType] owner:self];
-	[pasteboard setData:itemData forType:MyPrivateTableViewDataType];
+	NSInteger rowid = sqlite3_last_insert_rowid(db);
+	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,NULL);", rowid];
+	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
 	
-	return YES;
+	Item *page = [[Item alloc] initWithID:rowid name:[NSString stringWithFormat:@"%@ %i",CCLocalized(@"PAGE"),ordering] parent:rootItem uuid:uuid flags:0 type:3 ordering:(int)ordering visible:YES];
+	
+	return page;
 }
 
--(NSDragOperation)outlineView:(NSOutlineView *)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+-(Item *)createNewGroup:(NSString *)title onPage:(Item *)page withOrdering:(NSInteger)ordering
 {
-	if (draggedItem.type == kItemPage && item) // Page not in Root
-		return NO;
+	NSString *uuid = [self generateUUIDString];
 	
-	if (draggedItem.type == kItemGroup && [(Item *)item type]!=kItemPage) // Group not in Page
-		return NO;
+	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,2,%i,%i);", uuid, [page identifier], ordering];
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
 	
-	if (draggedItem.type == kItemApp && [(Item *)item type]==kItemGroup && [[(Item *)item children] count]>=maximumItemsPerGroup) // App in full group
-		return NO;
+	NSInteger rowid = sqlite3_last_insert_rowid(db);
+	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,'%@');", rowid, title];
+	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
 	
-	return NSDragOperationMove;
+	Item *group = [[Item alloc] initWithID:rowid name:title parent:page uuid:uuid flags:0 type:2 ordering:ordering visible:YES];
+	
+	return group;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView acceptDrop:(id<NSDraggingInfo>)info item:(id)parentItem childIndex:(NSInteger)dropRow 
+-(void)executeSQL:(NSString *)sqlQuery
 {
-	if (parentItem == nil) 
-		parentItem = rootItem;
+	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
+	sqlite3_exec(db, sql, NULL, NULL, NULL);
+}
+
+#pragma mark - Item actions
+
+-(void)setVisible:(BOOL)visible forItem:(Item *)item
+{
+	if([item setVisible:visible updateDatabase:YES]) {
+		for (Item *child in [item children]) {
+			[self setVisible:visible forItem:child];
+		}
+	}else{
+		[[NSAlert alertWithMessageText:CCLocalized(@"Error")
+						defaultButton:CCLocalized(@"Okay")
+					  alternateButton:nil
+						  otherButton:nil
+			 informativeTextWithFormat:CCLocalized(@"Couln't hide/unhide the item '%@'. Permission denied?")] runModal];
+	}
+}
+
+-(void)sortAllItems
+{
+	for (Item *item in [rootItem children]) {
+		[item sortChildrenAlphabetically:YES];
+	}
+	[self reload];
+}
+
+-(void)sortSelectedItem
+{
+	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
+	[item sortChildrenAlphabetically:NO];
 	
-	NSInteger dragRow = [[[draggedItem parent] children] indexOfObject:draggedItem];
+	[self reload];
+}
+
+-(void)renameSelectedItem
+{
+	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
 	
-	[draggedItem retain];
+	NSString *itemName = [self input:[NSString stringWithFormat:CCLocalized(@"You are about to rename '%@'.\nPlease type in the new name:"),[item name]] defaultValue:[item name]];
 	
-	if (dropRow>=0 || [(Item *)parentItem type] == kItemGroup) 
-	{
-		if (dropRow<0)
-			dropRow = 0;
-		
-		if ([draggedItem parent] == parentItem) {
-			if (dragRow < dropRow) {
-				dropRow--;
-			}
-		}
-		
-		for (Item *child in [[draggedItem parent] children]) {
-			if (child == draggedItem) continue;
-			
-			if (child.ordering>=draggedItem.ordering)
-				child.ordering--;
-		}
-		
-		Item *oldParent = [draggedItem parent];
-		
-		[draggedItem setParent:parentItem updateDatabase:YES];
-		[draggedItem setOrdering:dropRow+(draggedItem.type == kItemPage ? 1 : 0) updateDatabase:YES];
-		
-		for (Item *child in [[draggedItem parent] children]) {
-			if (child == draggedItem) continue;
-			
-			if (child.ordering>=draggedItem.ordering)
-				child.ordering++;
-		}
-		
-		if ([[oldParent children] count]==0) {
-			NSString *itemType = oldParent.type==kItemGroup?@"group":@"page";
-			if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:CCLocalized("Empty %@!"),itemType] 
-								 defaultButton:CCLocalized("Yes") 
-							   alternateButton:CCLocalized("No") 
-								   otherButton:nil
-					 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized("You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"), itemType, [oldParent name],[draggedItem name], itemType]] runModal])
-			{
-				[self removeItem:oldParent];
-			}
-		}
-		
-		[parentItem updateChildren];
-		
-		[self updatePages];
-	}else{ // dropped an app on an app
-		NSString *groupName = [self input:[NSString stringWithFormat:CCLocalized("You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"),[draggedItem name],[parentItem name]] defaultValue:@""];
-		
-		if (groupName) {
-			groupName = [groupName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			if ([groupName isNotEqualTo:@""]) 
-			{
-				if ([draggedItem parent] == parentItem) {
-					if (dragRow < dropRow) {
-						dropRow--;
-					}
-				}
-				
-				for (Item *child in [[draggedItem parent] children]) {
-					if (child == draggedItem) continue;
-					
-					if (child.ordering>=draggedItem.ordering)
-						child.ordering--;
-				}
-				
-				Item *group = [self createNewGroup:groupName onPage:[parentItem parent] withOrdering:[parentItem ordering]];
-				[parentItem setParent:group updateDatabase:YES];
-				[draggedItem setParent:group updateDatabase:YES];
-				[parentItem setOrdering:0];
-				[draggedItem setOrdering:1];
-				
-				[[group parent] updateChildren];
-			}
+	if (itemName) {
+		itemName = [itemName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		if ([itemName isNotEqualTo:@""]) 
+		{
+			[item setName:itemName updateDatabase:YES];
+			[self reload];
 		}
 	}
-	
-	[draggedItem release];
-	
-	[outlineView noteNumberOfRowsChanged];
-	[outlineView reloadData];
-		
-	return YES;
 }
 
 -(void)removeItem:(Item *)item
@@ -873,7 +1094,32 @@ END;"];
 	}
 }
 
-// return a new autoreleased UUID string
+-(BOOL)addIgnoredBundle:(NSString *)bundleIdentifier
+{
+	if ([bundleIdentifier isEqualTo:@""])
+		return false;
+	
+	[ignoredBundles addObject:bundleIdentifier];
+	
+	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
+	
+	return [self movePlistWithRights];
+}
+
+-(BOOL)removeIgnoredBundle:(NSString *)bundleIdentifier
+{
+	if ([bundleIdentifier isEqualTo:@""])
+		return false;
+	
+	[ignoredBundles removeObject:bundleIdentifier];
+	
+	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
+	
+	return [self movePlistWithRights];
+}
+
+#pragma mark - System control
+
 - (NSString *)generateUUIDString
 {
 	// create a new UUID which you own
@@ -893,10 +1139,34 @@ END;"];
 	return uuidString;
 }
 
+-(BOOL)movePlistWithRights
+{
+	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:@"-c"];
+	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",[plistTemporaryPath stringByAppendingPathComponent:plistFileName],[plistPath stringByAppendingPathComponent:plistFileName]]];
+	// Convert array into void-* array.
+	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
+	int argvIndex = 0;
+	for (NSString *string in args) {
+		argv[argvIndex] = [string UTF8String];
+		argvIndex++;
+	}
+	argv[argvIndex] = nil;
+	
+	OSErr processError = AuthorizationExecuteWithPrivileges([[authView authorization] authorizationRef], [@"/bin/sh" UTF8String],
+															kAuthorizationFlagDefaults, (char *const *)argv, nil);
+	free(argv);
+	
+	if (processError != errAuthorizationSuccess)
+		return false;
+	
+	return true;
+}
+
 -(NSString *)input:(NSString *)prompt defaultValue:(NSString *)defaultValue {
 	NSAlert *alert = [NSAlert alertWithMessageText:prompt
-									 defaultButton:CCLocalized("Okay")
-								   alternateButton:CCLocalized("Cancel")
+									 defaultButton:CCLocalized(@"Okay")
+								   alternateButton:CCLocalized(@"Cancel")
 									   otherButton:nil
 						 informativeTextWithFormat:@""];
 	
@@ -910,256 +1180,7 @@ END;"];
 	} else if (button == NSAlertAlternateReturn) {
 		return nil;
 	} else {
-		NSAssert1(NO, @"Invalid input dialog button %d", button);
 		return nil;
-	}
-}
-
--(Item *)createNewPage 
-{
-	NSString *uuid = [self generateUUIDString];
-	NSInteger ordering = [[rootItem children] count];
-	
-	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,3,%i,%i);", uuid, [rootItem identifier], ordering];
-	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
-	
-	NSInteger rowid = sqlite3_last_insert_rowid(db);
-	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,NULL);", rowid];
-	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
-	
-	Item *page = [[Item alloc] initWithID:rowid name:[NSString stringWithFormat:@"%@ %i",CCLocalized("PAGE"),ordering] parent:rootItem uuid:uuid flags:0 type:3 ordering:(int)ordering visible:YES];
-	
-	return page;
-}
-
--(Item *)createNewGroup:(NSString *)title onPage:(Item *)page withOrdering:(NSInteger)ordering
-{
-	NSString *uuid = [self generateUUIDString];
-	
-	NSString *sqlQuery = [NSString stringWithFormat:@"INSERT INTO items (uuid, flags, type, parent_id, ordering) VALUES ('%@',0,2,%i,%i);", uuid, [page identifier], ordering];
-	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
-	
-	NSInteger rowid = sqlite3_last_insert_rowid(db);
-	sqlQuery = [NSString stringWithFormat:@"INSERT INTO groups (item_id, category_id, title) VALUES (%i,NULL,'%@');", rowid, title];
-	sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
-	
-	Item *group = [[Item alloc] initWithID:rowid name:title parent:page uuid:uuid flags:0 type:2 ordering:ordering visible:YES];
-	
-	return group;
-}
-
--(void)executeSQL:(NSString *)sqlQuery
-{
-	const char *sql = [sqlQuery cStringUsingEncoding:NSUTF8StringEncoding];
-	sqlite3_exec(db, sql, NULL, NULL, NULL);
-}
-
--(BOOL)addIgnoredBundle:(NSString *)bundleIdentifier
-{
-	if ([bundleIdentifier isEqualTo:@""])
-		return false;
-	
-	[ignoredBundles addObject:bundleIdentifier];
-
-	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
-
-	return [self movePlistWithRights];
-}
-
--(BOOL)removeIgnoredBundle:(NSString *)bundleIdentifier
-{
-	if ([bundleIdentifier isEqualTo:@""])
-		return false;
-	
-	[ignoredBundles removeObject:bundleIdentifier];
-	
-	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
-	
-	return [self movePlistWithRights];
-}
-
--(BOOL)backupDatabase
-{	
-	NSSavePanel *savePanel = [NSSavePanel savePanel];
-	[savePanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
-	
-	NSInteger savePanelResult	= [savePanel runModal];
-	
-	if(savePanelResult == NSOKButton)
-	{
-		NSURL *directoryURL = [savePanel directoryURL];
-		NSURL *fileURL = [savePanel URL];
-		
-		NSError *error = nil;
-		
-		@try 
-		{
-			[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
-			[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
-			
-			if(![[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error] || error)
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-			if(![[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error] || error)
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-			if (![[NSFileManager defaultManager] copyItemAtPath:[plistPath stringByAppendingPathComponent:plistFileName] 
-													toPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] 
-													 error:&error] || error)
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-			if (![[NSFileManager defaultManager] copyItemAtPath:databasePath 
-													toPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] 
-													 error:&error] || error)
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-			NSTask *task = [[NSTask alloc] init];
-			[task setCurrentDirectoryPath:zipContentsPath];
-			[task setLaunchPath:@"/usr/bin/zip"];
-			NSArray *argsArray = [NSArray arrayWithObjects:[fileURL lastPathComponent], plistFileName, @"lp.db", nil];
-			[task setArguments:argsArray];
-			[task launch];
-			[task waitUntilExit];
-			
-			NSURL *temporaryFileURL = [NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:[fileURL lastPathComponent]]];
-			
-			if ([[NSFileManager defaultManager] fileExistsAtPath:[fileURL path]]) {
-				if(![[NSFileManager defaultManager] removeItemAtURL:fileURL error:&error] || error)
-					[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			}
-			
-			if(![[NSFileManager defaultManager] moveItemAtURL:temporaryFileURL toURL:fileURL error:&error] || error) 
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-			if (error)
-				[NSException raise:@"CouldNotBackupDatabaseException" format:CCLocalized("There was an error backupping the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-			
-		}@catch (NSException *exception) {
-			[[NSAlert alertWithMessageText:CCLocalized("Error") 
-							 defaultButton:CCLocalized("Okay") 
-						   alternateButton:nil
-							   otherButton:nil
-				 informativeTextWithFormat:[exception reason]] runModal];
-			return false;
-		}
-	}else{
-		return false;
-	}
-	
-	[[NSAlert alertWithMessageText:CCLocalized("Backup successfully") 
-					 defaultButton:CCLocalized("Okay") 
-				   alternateButton:nil
-					   otherButton:nil
-		 informativeTextWithFormat:CCLocalized("The backup was successfully created and saved.")] runModal];
-	
-	return true;
-}
-
--(BOOL)restoreDatabase
-{
-	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
-	[openPanel setAllowedFileTypes:[NSArray arrayWithObject:@"lcb"]];
-	
-	NSInteger openPanelResult = [openPanel runModal];
-	
-	if (openPanelResult == NSOKButton) 
-	{
-		NSURL *fileURL = [openPanel URL];
-		NSString *fileName = [fileURL lastPathComponent];
-		
-		NSError *error = nil;
-		
-		@try
-		{
-			if ([[fileURL pathExtension] isEqualToString:@"lcb"]) 
-			{
-				[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
-				[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
-				
-				[[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:[NSURL fileURLWithPath:[zipContentsPath stringByAppendingPathComponent:fileName]] error:&error];
-				
-				if (error)
-					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-				
-				NSTask *task = [[NSTask alloc] init];
-				[task setCurrentDirectoryPath:zipContentsPath];
-				[task setLaunchPath:@"/usr/bin/unzip"];
-				NSArray *argsArray = [NSArray arrayWithObject:fileName];
-				[task setArguments:argsArray];
-				[task launch];
-				[task waitUntilExit];
-				
-				[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:plistFileName] toPath:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] error:&error];
-				if (!error && [self movePlistWithRights]) {
-					[[NSFileManager defaultManager] removeItemAtPath:databaseBackupPath error:&error];
-					[[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:databaseBackupPath error:&error];
-					[[NSFileManager defaultManager] moveItemAtPath:[zipContentsPath stringByAppendingPathComponent:@"lp.db"] toPath:databasePath error:&error];
-					
-					[self closeDatabase];
-					[self openDatabase];
-					[self reload];
-					
-					if (error)
-						[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-					
-				}else if(error){
-					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("There was an error restoring the database:\n\nError Code: %@\nDescription: %@"), [error code], [error localizedDescription]];
-				}else{
-					[NSException raise:@"CouldNotRestoreDatabaseException" format:CCLocalized("You have to grant this application admin rights to be able to restore the database.")];
-				}
-			}
-		}@catch (NSException *exception) {
-			[[NSAlert alertWithMessageText:CCLocalized("Error") 
-							 defaultButton:CCLocalized("Okay") 
-						   alternateButton:nil
-							   otherButton:nil
-				 informativeTextWithFormat:[exception reason]] runModal];
-			return false;
-		}
-	}
-	
-	[[NSAlert alertWithMessageText:CCLocalized("Restore successfully") 
-					 defaultButton:CCLocalized("Okay") 
-				   alternateButton:nil
-					   otherButton:nil
-		 informativeTextWithFormat:CCLocalized("The database was successfully restored and loaded.")] runModal];
-	
-	return true;
-}
-
--(void)sortAllItems
-{
-	for (Item *item in [rootItem children]) {
-		[item sortChildrenAlphabetically:YES];
-	}
-	[self reload];
-}
-
--(void)sortSelectedItem
-{
-	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
-	[item sortChildrenAlphabetically:NO];
-	
-	[self reload];
-}
-
--(void)renameSelectedItem
-{
-	Item *item = [outlineView itemAtRow:[outlineView selectedRow]];
-	
-	NSString *itemName = [self input:[NSString stringWithFormat:CCLocalized("You are about to rename '%@'.\nPlease type in the new name:"),[item name]] defaultValue:[item name]];
-	
-	if (itemName) {
-		itemName = [itemName stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		if ([itemName isNotEqualTo:@""]) 
-		{
-			[item setName:itemName updateDatabase:YES];
-			[self reload];
-		}
 	}
 }
 

@@ -118,5 +118,6 @@
 #pragma mark - System Control
 -(void)restartLaunchpad;
 -(void)restartDock;
+-(BOOL)movePlistWithRights;
 
 @end

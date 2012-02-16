@@ -23,7 +23,7 @@
 
 // UI
 
-"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="This app allows you to easily hide apps or groups from Launchpad.\nTo hide an app just uncheck it and click 'Apply'.";
+"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top."="This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top.";
 "Footer"="Use at your own risk. | © Andreas Ganske";
 
 // Special dialogs
@@ -52,3 +52,4 @@
 "Could not open the database file for Launchpad."="Could not open the database file for Launchpad.";
 "Corrupt database detected!"="Corrupt database detected!";
 "Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.";
+

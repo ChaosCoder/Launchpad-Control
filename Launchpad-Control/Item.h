@@ -45,5 +45,6 @@ int signum(int n);
 -(void)addChild:(Item *)item;
 -(void)removeChild:(Item *)item;
 -(void)updateChildren;
+-(void)sortChildrenAlphabetically:(BOOL)recursive;
 
 @end
