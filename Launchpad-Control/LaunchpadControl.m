@@ -11,6 +11,9 @@
 #import "CCUtils.h"
 
 @implementation LaunchpadControl
+@synthesize databaseDirectoryPath;
+@synthesize databasePath;
+@synthesize databaseBackupPath;
 @synthesize allItemsFieldCell;
 @synthesize selectedItemFieldCell;
 @synthesize databaseFieldCell;
@@ -25,9 +28,12 @@
 @synthesize helpFieldCell;
 @synthesize helpButton;
 
+@synthesize outlineView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
+
 static NSString *zipContentsPath = @"/tmp/lcbackup/";
 static NSString *databaseFileName = @"database.db";
 static NSString *plistFileName = @"LaunchPadLayout.plist";
+static NSString *plistBackupFileName = @"LaunchPadLayout.plist";
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources";
 static NSString *plistTemporaryPath = @"/tmp";
 static NSString *currentVersion;
@@ -38,8 +44,6 @@ static NSInteger maximumItemsPerGroup = 32;
 static id _shared = nil;
 
 #define MyPrivateTableViewDataType @"MyPrivateTableViewDataType"
-
-@synthesize outlineView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 +(id)shared
 {
@@ -59,14 +63,27 @@ static id _shared = nil;
 
 -(void)mainViewDidLoad
 {
+	self.databaseDirectoryPath = [@"~/Library/Application Support/Dock/" stringByStandardizingPath];
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
 	[outlineView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
-	[descriptionFieldCell setTitle:CCLocalized(@"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top.")];
+	[helpFieldCell setTitle:CCLocalized(@"Help")];
+	[descriptionFieldCell setTitle:CCLocalized(@"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor detailed instructions please click the 'Help'-button at the top.")];
 	[resetDatabaseButton setTitle:CCLocalized(@"Reset")];
 	[refreshButton setTitle:CCLocalized(@"Refresh")];
 	[applyButton setTitle:CCLocalized(@"Apply")];
 	[currentVersionField setTitle:[NSString stringWithFormat:@"v%@",currentVersion]];
+	
+	[allItemsFieldCell setTitle:CCLocalized(@"All items")];
+	[sortAllButton setTitle:CCLocalized(@"Sort all items A-Z")];
+	[selectedItemFieldCell setTitle:CCLocalized(@"Selected item")];
+	[renameItemButton setTitle:CCLocalized(@"Rename")];
+	[sortItemButton setTitle:CCLocalized(@"Sort children A-Z")];
+	[databaseFieldCell setTitle:CCLocalized(@"Database")];
+	[backupDatabaseButton setTitle:CCLocalized(@"Backup")];
+	[restoreDatabaseButton setTitle:CCLocalized(@"Restore")];
+	[resetDatabaseButton setTitle:CCLocalized(@"Reset")];
+	[authorFieldCell setTitle:CCLocalized(@"Footer")];
 	
 	items = [[NSMutableArray alloc] init];
 	
@@ -90,7 +107,13 @@ static id _shared = nil;
 
 -(void)loadPlist
 {
-	plist = [NSMutableDictionary dictionaryWithContentsOfFile:[plistPath stringByAppendingPathComponent:plistFileName]];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName]])
+        [[NSFileManager defaultManager] copyItemAtPath:[plistPath stringByAppendingPathComponent:plistFileName] 
+                                                toPath:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName] 
+                                                 error:nil];
+    
+    
+	plist = [[NSMutableDictionary alloc] initWithContentsOfFile:[plistPath stringByAppendingPathComponent:plistFileName]];
 	ignoredBundles = [plist objectForKey:@"ignore"];
 }
 
@@ -120,6 +143,8 @@ static id _shared = nil;
 		[self sortSelectedItem];
 	}else if (sender == renameItemButton) {
 		[self renameSelectedItem];
+	}else if (sender == helpButton) {
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/help"]];
 	}
 }
 
@@ -207,6 +232,11 @@ static id _shared = nil;
 -(BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
 	return [[item children] count]>0;
+}
+
+-(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{
+    [self setVisible:![item visible] forItem:item];
 }
 
 -(NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -337,7 +367,7 @@ static id _shared = nil;
 		}
 		
 		if ([[oldParent children] count]==0) {
-			NSString *itemType = oldParent.type==kItemGroup?@"group":@"page";
+			NSString *itemType = oldParent.type==kItemGroup?CCLocalized(@"group"):CCLocalized(@"page");
 			if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:CCLocalized(@"Empty %@!"),itemType] 
 								 defaultButton:CCLocalized(@"Yes") 
 							   alternateButton:CCLocalized(@"No") 
@@ -398,7 +428,7 @@ static id _shared = nil;
 	
 	@try {
 		NSFileManager *fileManager = [NSFileManager defaultManager];
-		NSString *directory = [@"~/Library/Application Support/Dock/" stringByStandardizingPath];
+		NSString *directory = [databaseDirectoryPath stringByStandardizingPath];
 		
 		NSArray *files = [fileManager contentsOfDirectoryAtPath:directory error:&error];
 		
@@ -410,8 +440,8 @@ static id _shared = nil;
 		for (NSString *fileName in files) {
 			if ([[fileName pathExtension] isEqualToString:@"db"]) {
 				
-				databasePath = [directory stringByAppendingPathComponent:fileName];
-				databaseBackupPath = [databasePath stringByAppendingPathExtension:@"backup"];
+				self.databasePath = [directory stringByAppendingPathComponent:fileName];
+				self.databaseBackupPath = [databasePath stringByAppendingPathExtension:@"backup"];
 				
 				if (![fileManager fileExistsAtPath:databaseBackupPath]){
 					[fileManager copyItemAtPath:databasePath toPath:databaseBackupPath error:&error];
@@ -492,7 +522,7 @@ static id _shared = nil;
 					break;
 					
 				case kItemPage:
-					if ([uuid isEqualToString:@"HOLDINGPAGE"])
+					if ([uuid isEqualToString:@"HOLDINGPAGE"] || [uuid isEqualToString:@"HOLDINGPAGE_DB"])
 						continue;
 					else
 						name = [CCLocalized(@"PAGE") stringByAppendingFormat:@" %i",++pageCount];
@@ -757,7 +787,15 @@ static id _shared = nil;
 			 informativeTextWithFormat:CCLocalized(@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
-		[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
+		if ([self moveFileWithRightsFrom:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName] to:[plistPath stringByAppendingPathComponent:plistFileName]])
+			[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
+		else {
+			[[NSAlert alertWithMessageText:CCLocalized(@"Error") 
+							 defaultButton:CCLocalized(@"Okay") 
+						   alternateButton:nil
+							   otherButton:nil 
+				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please copy the backup from %@ manually."),[plistPath stringByAppendingPathComponent:plistFileName],[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName]] runModal];
+		}
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
@@ -905,20 +943,7 @@ END;"];
 
 -(void)refreshDatabase
 {
-	if (changedData) {
-		if ([[NSAlert alertWithMessageText:CCLocalized(@"Unsaved changes!") 
-							 defaultButton:CCLocalized(@"Apply") 
-						   alternateButton:CCLocalized(@"Refresh") 
-							   otherButton:nil
-				 informativeTextWithFormat:CCLocalized(@"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?")] runModal])
-		{
-			[self restartLaunchpad];
-		}else{
-			[self reload];
-		}
-	}else{
-		[self reload];
-	}
+	[self reload];
 }
 
 -(void)migrateFrom:(NSString *)oldVersion
@@ -1014,7 +1039,7 @@ END;"];
 						defaultButton:CCLocalized(@"Okay")
 					  alternateButton:nil
 						  otherButton:nil
-			 informativeTextWithFormat:CCLocalized(@"Couln't hide/unhide the item '%@'. Permission denied?")] runModal];
+			 informativeTextWithFormat:[NSString stringWithFormat:CCLocalized(@"Couln't hide/unhide the item '%@'. Permission denied?"),[item name]]] runModal];
 	}
 }
 
@@ -1141,9 +1166,14 @@ END;"];
 
 -(BOOL)movePlistWithRights
 {
+	return [self moveFileWithRightsFrom:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] to:[plistPath stringByAppendingPathComponent:plistFileName]];
+}
+
+-(BOOL)moveFileWithRightsFrom:(NSString *)source to:(NSString *)destination
+{
 	NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-c"];
-	[args addObject:[NSString stringWithFormat:@" mv -f %@ %@",[plistTemporaryPath stringByAppendingPathComponent:plistFileName],[plistPath stringByAppendingPathComponent:plistFileName]]];
+	[args addObject:[NSString stringWithFormat:@" mv -f \"%@\" \"%@\"",source,destination]];
 	// Convert array into void-* array.
 	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
 	int argvIndex = 0;

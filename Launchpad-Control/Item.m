@@ -173,7 +173,7 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(NSString *)description
 {
-	return [NSString stringWithFormat:@"%@ (%i)",self.name,self.ordering];
+	return self.name;
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder

@@ -18,12 +18,21 @@
 "Quit"="Beenden";
 "Download"="Download";
 "Later"="Später";
-"Reset"="Reset";
+"Reset"="Zurücksetzen";
 "Error"="Fehler";
+"Help"="Hilfe";
+"All items"="Alle Einträge";
+"Sort all items A-Z"="Sortieren: A-Z";
+"Selected item"="Markierter Eintrag";
+"Rename"="Umbenennen";
+"Sort children A-Z"="Sortiere Kinder A-Z";
+"Database"="Datenbank";
+"Backup"="Sichern";
+"Restore"="Wiederherstellen";
 
 // UI
 
-"This app allows you to easily hide apps or groups from Launchpad.~nTo hide an app just uncheck it and click 'Apply'."="Diese App erlaubt es Dir Apps und Gruppen im Launchpad zu verstecken.\nWähle die Apps ab, die versteckt werden sollen und klicke auf 'Anwenden'.";
+"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor detailed instructions please click the 'Help'-button at the top."="Diese App erlaubt es Dir Apps und Gruppen im Launchpad zu verstecken und zu verschieben. Für weitere Instruktionen klicke einfach oben auf 'Hilfe'";
 "Footer"="Benutzung auf eigene Gefahr | © Andreas Ganske";
 
 // Special dialogs
@@ -42,7 +51,7 @@
 "You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"="Es scheint als hättest du Änderungen vorgenommen ohne sie angewendet zu haben. Eine Aktualisierung wird diese Änderungen rückgängig machen. \nWas möchtest du tun?";
 // ETC
 
-"PAGE"="SEITE";
+"PAGE"="Seite";
 "http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
 
 // Exceptions
@@ -52,3 +61,28 @@
 "Could not open the database file for Launchpad."="Konnte die Datenbankdatei von Launchpad nicht öffnen.";
 "Corrupt database detected!"="Fehlerhafte Datenbank gefunden!";
 "Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Deine Datenbank scheint fehlerhaft zu sein.~nDu musst einen vollständigen Reset durchführen. Alle manuellen Änderungen an der Datenbank gehen dabei verloren.";
+
+
+// Drag'n'Drop
+
+"group"="Gruppe";
+"page"="Seite";
+
+"Empty %@!"="Leere	%@!";
+"You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"="Die %@ '%@' wurde geleert, weil du '%@' hinaus bewegt hast. Möchtest du die %@ aus dem Launchpad entfernen?";
+"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"="Du möchtest You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:";
+
+// Backup and restore
+
+"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"="There was an error backupping the database:\n\nError Code: %@\nDescription: %@";
+"Backup successfully"="Backup successfully";
+"The backup was successfully created and saved."="The backup was successfully created and saved.";
+
+"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"="There was an error restoring the database:\n\nError Code: %@\nDescription: %@";
+"You have to grant this application admin rights to be able to restore the database."="You have to grant this application admin rights to be able to restore the database.";
+
+"Restore successfully"="Restore successfully";
+"The database was successfully restored and loaded."="The database was successfully restored and loaded.";
+
+"Couln't hide/unhide the item '%@'. Permission denied?"="Couln't hide/unhide the item '%@'. Permission denied?";
+"You are about to rename '%@'.\nPlease type in the new name:"="You are about to rename '%@'.\nPlease type in the new name:";

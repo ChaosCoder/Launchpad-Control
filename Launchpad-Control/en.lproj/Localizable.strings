@@ -20,10 +20,19 @@
 "Later"="Later";
 "Reset"="Reset";
 "Error"="Error";
+"Help"="Help";
+"All items"="All items";
+"Sort all items A-Z"="Sort all item A-Z";
+"Selected item"="Selected Item";
+"Rename"="Rename";
+"Sort children A-Z"="Sort children A-Z";
+"Database"="Database";
+"Backup"="Backup";
+"Restore"="Restore";
 
 // UI
 
-"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top."="This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor a detailed instruction please click the 'Help'-button at the top.";
+"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor detailed instructions please click the 'Help'-button at the top."="This app allows you to easily hide/unhide and reorder apps in Launchpad.\nFor detailed instructions please click the 'Help'-button at the top.";
 "Footer"="Use at your own risk. | © Andreas Ganske";
 
 // Special dialogs
@@ -42,7 +51,7 @@
 "You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"="You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?";
 // ETC
 
-"PAGE"="PAGE";
+"PAGE"="Page";
 "http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
 
 // Exceptions
@@ -53,3 +62,26 @@
 "Corrupt database detected!"="Corrupt database detected!";
 "Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone.";
 
+// Drag'n'Drop
+
+"group"="group";
+"page"="page";
+
+"Empty %@!"="Empty %@!";
+"You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"="You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?";
+"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"="You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:";
+
+// Backup and restore
+
+"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"="There was an error backupping the database:\n\nError Code: %@\nDescription: %@";
+"Backup successfully"="Backup successfully";
+"The backup was successfully created and saved."="The backup was successfully created and saved.";
+
+"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"="There was an error restoring the database:\n\nError Code: %@\nDescription: %@";
+"You have to grant this application admin rights to be able to restore the database."="You have to grant this application admin rights to be able to restore the database.";
+
+"Restore successfully"="Restore successfully";
+"The database was successfully restored and loaded."="The database was successfully restored and loaded.";
+
+"Couln't hide/unhide the item '%@'. Permission denied?"="Couln't hide/unhide the item '%@'. Permission denied?";
+"You are about to rename '%@'.\nPlease type in the new name:"="You are about to rename '%@'.\nPlease type in the new name:";

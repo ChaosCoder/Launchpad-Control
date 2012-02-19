@@ -20,6 +20,7 @@
 	Item *draggedItem;
 	
 	sqlite3 *db;
+	NSString *databaseDirectoryPath;
 	NSString *databasePath;
 	NSString *databaseBackupPath;
 	
@@ -31,6 +32,10 @@
 	
 	NSMutableData *receivedData;
 }
+
+@property (nonatomic, strong) NSString *databaseDirectoryPath;
+@property (nonatomic, strong) NSString *databasePath;
+@property (nonatomic, strong) NSString *databaseBackupPath;
 
 #pragma mark - Properties
 #pragma mark - Outlets - Labels
