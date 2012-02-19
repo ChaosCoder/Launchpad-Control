@@ -70,19 +70,19 @@
 
 "Empty %@!"="Leere	%@!";
 "You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"="Die %@ '%@' wurde geleert, weil du '%@' hinaus bewegt hast. Möchtest du die %@ aus dem Launchpad entfernen?";
-"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"="Du möchtest You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:";
+"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"="Du bist dabei eine neue Gruppe mit folgenden Apps anzulegen:\n\n• %@\n• %@\n\nBitte gib den Namen dieser neuen Gruppe ein:";
 
 // Backup and restore
 
 "There was an error backupping the database:\n\nError Code: %@\nDescription: %@"="There was an error backupping the database:\n\nError Code: %@\nDescription: %@";
 "Backup successfully"="Backup successfully";
-"The backup was successfully created and saved."="The backup was successfully created and saved.";
+"The backup was successfully created and saved."="Die Sicherung wurde erfolgreich erstellt und gespeichert.";
 
 "There was an error restoring the database:\n\nError Code: %@\nDescription: %@"="There was an error restoring the database:\n\nError Code: %@\nDescription: %@";
 "You have to grant this application admin rights to be able to restore the database."="You have to grant this application admin rights to be able to restore the database.";
 
-"Restore successfully"="Restore successfully";
-"The database was successfully restored and loaded."="The database was successfully restored and loaded.";
+"Restore successfully"="Wiederherstellung erfolgreich!";
+"The database was successfully restored and loaded."="Die Datenbank wurde erfolgreich wiederhergestellt und geladen.";
 
 "Couln't hide/unhide the item '%@'. Permission denied?"="Couln't hide/unhide the item '%@'. Permission denied?";
-"You are about to rename '%@'.\nPlease type in the new name:"="You are about to rename '%@'.\nPlease type in the new name:";
+"You are about to rename '%@'.\nPlease type in the new name:"="Du möchtest %@ umbenennen.\nBitte gib den neuen Namen ein:";
