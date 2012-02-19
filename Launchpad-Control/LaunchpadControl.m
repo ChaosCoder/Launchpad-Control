@@ -234,9 +234,10 @@ static id _shared = nil;
 	return [[item children] count]>0;
 }
 
--(void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+-(void)outlineView:(NSOutlineView *)_outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    [self setVisible:![item visible] forItem:item];
+    [self setVisible:[object boolValue] forItem:(Item *)item];
+	[outlineView reloadItem:item reloadChildren:YES];
 }
 
 -(NSCell *)outlineView:(NSOutlineView *)outlineView dataCellForTableColumn:(NSTableColumn *)tableColumn item:(id)item
@@ -1121,8 +1122,8 @@ END;"];
 
 -(BOOL)addIgnoredBundle:(NSString *)bundleIdentifier
 {
-	if ([bundleIdentifier isEqualTo:@""])
-		return false;
+	if (!bundleIdentifier || [bundleIdentifier isEqualTo:@""])
+		return true;
 	
 	[ignoredBundles addObject:bundleIdentifier];
 	
@@ -1134,7 +1135,7 @@ END;"];
 -(BOOL)removeIgnoredBundle:(NSString *)bundleIdentifier
 {
 	if ([bundleIdentifier isEqualTo:@""])
-		return false;
+		return true;
 	
 	[ignoredBundles removeObject:bundleIdentifier];
 	
