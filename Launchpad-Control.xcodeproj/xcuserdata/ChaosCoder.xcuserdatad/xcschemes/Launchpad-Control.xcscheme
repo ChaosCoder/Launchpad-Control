@@ -39,9 +39,6 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <PathRunnable
-         FilePath = "/Applications/System Preferences.app">
-      </PathRunnable>
       <AdditionalOptions>
          <AdditionalOption
             key = "NSZombieEnabled"

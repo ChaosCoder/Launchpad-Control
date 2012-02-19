@@ -239,7 +239,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<object class="NSTextField" id="438570260">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{168, 427}, {32, 17}}</string>
+							<string key="NSFrame">{{168, 427}, {40, 17}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="88778508"/>
@@ -248,7 +248,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<object class="NSTextFieldCell" key="NSCell" id="748700601">
 								<int key="NSCellFlags">68258368</int>
 								<int key="NSCellFlags2">4195328</int>
-								<string key="NSContents">vX.X</string>
+								<string key="NSContents">vX.XX</string>
 								<reference key="NSSupport" ref="188501509"/>
 								<string key="NSPlaceholderString"/>
 								<string key="NSCellIdentifier">_NS:3936</string>
@@ -288,7 +288,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<object class="NSButton" id="819493985">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">-2147483380</int>
-							<string key="NSFrame">{{199, 417}, {127, 32}}</string>
+							<string key="NSFrame">{{203, 417}, {136, 32}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="368903325"/>
@@ -297,7 +297,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<object class="NSButtonCell" key="NSCell" id="742058980">
 								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">150994944</int>
-								<string key="NSContents">Get vX.X now!</string>
+								<string key="NSContents">Get vX.XX now!</string>
 								<reference key="NSSupport" ref="188501509"/>
 								<string key="NSCellIdentifier">_NS:161</string>
 								<reference key="NSControlView" ref="819493985"/>
@@ -1052,7 +1052,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<reference ref="411670740"/>
 							<reference ref="515152489"/>
 							<reference ref="438570260"/>
-							<reference ref="819493985"/>
 							<reference ref="98611957"/>
 							<reference ref="762516816"/>
 							<reference ref="407734797"/>
@@ -1071,6 +1070,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<reference ref="746120867"/>
 							<reference ref="88778508"/>
 							<reference ref="368903325"/>
+							<reference ref="819493985"/>
 						</array>
 						<reference key="parent" ref="660800786"/>
 					</object>

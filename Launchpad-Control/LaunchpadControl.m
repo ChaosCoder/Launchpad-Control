@@ -458,6 +458,9 @@ static id _shared = nil;
 					{
 						dbOpened = YES;
 						NSString *databaseVersion = [self getDatabaseVersion];
+						if ([databaseVersion floatValue]>[currentVersion floatValue] && [[NSAlert alertWithMessageText:CCLocalized(@"Error") defaultButton:CCLocalized(@"Yes") alternateButton:@"No" otherButton:nil informativeTextWithFormat:CCLocalized(@"The database was modified with a newer version from Launchpad-Control. Downgrading to an older version could result in massive bugs.\n\nDo you really want to load the database?")] runModal]) {
+							return YES;
+						}
 						if (![databaseVersion isEqualToString:currentVersion]) {
 							[self migrateFrom:databaseVersion];
 						}
@@ -960,6 +963,9 @@ END;"];
 		
 		[self dropTriggers];
 		[self createTriggers];
+	}else if([oldVersion isEqualToString:@"1.5"]) {
+		[self moveFileWithRightsFrom:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName] to:[plistPath stringByAppendingPathComponent:plistFileName]];
+		[self loadPlist];
 	}
 	
 	[self setDatabaseVersion];

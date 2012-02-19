@@ -76,9 +76,9 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 	if (updateDatabase) {
 		bool success;
 		if (isVisible) {
-			success = [[LaunchpadControl shared] addIgnoredBundle:_bundleIdentifier];
-		}else{
 			success = [[LaunchpadControl shared] removeIgnoredBundle:_bundleIdentifier];
+		}else{
+			success = [[LaunchpadControl shared] addIgnoredBundle:_bundleIdentifier];
 		}
 		
 		if (success) {
