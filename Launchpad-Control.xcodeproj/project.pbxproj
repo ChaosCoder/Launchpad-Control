@@ -36,7 +36,6 @@
 		7D1D8F8414D9F2AB00EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8FB614D9FC9900EC82BA /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
 		7D1D8FB714D9FC9900EC82BA /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
-		7D35EDA314F16A0B0082BF18 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "Launchpad-Control/it.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5DAA5713E1E9D800483A2F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
@@ -260,7 +259,6 @@
 			children = (
 				7D1D8F8214D9F2A500EC82BA /* en */,
 				7D1D8F8414D9F2AB00EC82BA /* de */,
-				7D35EDA314F16A0B0082BF18 /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
