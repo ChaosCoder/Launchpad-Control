@@ -638,7 +638,9 @@ static id _shared = nil;
 		
 		@try 
 		{
-			[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+			if ([[NSFileManager defaultManager] fileExistsAtPath:zipContentsPath])
+				[[NSFileManager defaultManager] removeItemAtPath:zipContentsPath error:&error];
+			
 			[[NSFileManager defaultManager] createDirectoryAtPath:zipContentsPath withIntermediateDirectories:YES attributes:nil error:&error];
 			
 			if(![[NSFileManager defaultManager] createDirectoryAtURL:directoryURL withIntermediateDirectories:YES attributes:nil error:&error] || error)
@@ -791,7 +793,7 @@ static id _shared = nil;
 			 informativeTextWithFormat:CCLocalized(@"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone.")] runModal])
 	{
 		[self closeDatabase];
-		if ([self moveFileWithRightsFrom:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName] to:[plistPath stringByAppendingPathComponent:plistFileName]])
+		/*if ([self moveFileWithRightsFrom:[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName] to:[plistPath stringByAppendingPathComponent:plistFileName]])
 			[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		else {
 			[[NSAlert alertWithMessageText:CCLocalized(@"Error") 
@@ -799,7 +801,16 @@ static id _shared = nil;
 						   alternateButton:nil
 							   otherButton:nil 
 				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please copy the backup from %@ manually."),[plistPath stringByAppendingPathComponent:plistFileName],[databaseDirectoryPath stringByAppendingPathComponent:plistBackupFileName]] runModal];
+		}*/
+		
+		if (![self resetIgnoredBundles]) {
+			[[NSAlert alertWithMessageText:CCLocalized(@"Error") 
+							 defaultButton:CCLocalized(@"Okay") 
+						   alternateButton:nil
+							   otherButton:nil 
+				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please see http://chaosspace.de/launchpad-control/faq/"),[plistPath stringByAppendingPathComponent:plistFileName]] runModal];
 		}
+		
 		[self restartDock];
 		system("open /Applications/Launchpad.app");
 		
@@ -1148,6 +1159,12 @@ END;"];
 	[plist writeToFile:[plistTemporaryPath stringByAppendingPathComponent:plistFileName] atomically:YES];
 	
 	return [self movePlistWithRights];
+}
+
+-(BOOL)resetIgnoredBundles
+{
+	[ignoredBundles removeAllObjects];
+	return [self addIgnoredBundle:@"com.apple.launchpad.launcher"];
 }
 
 #pragma mark - System control

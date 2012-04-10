@@ -24,6 +24,7 @@
 		7D63FBCC14A4887400518DD2 /* twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D63FBCB14A4887400518DD2 /* twitter.png */; };
 		7D81203014DB2979005D5D37 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202E14DB2979005D5D37 /* Security.framework */; };
 		7D81203114DB2979005D5D37 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202F14DB2979005D5D37 /* SecurityInterface.framework */; };
+		7DDB5F3A153485A60054C479 /* LaunchpadControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		7D63FBCB14A4887400518DD2 /* twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter.png; sourceTree = "<group>"; };
 		7D81202E14DB2979005D5D37 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		7D81202F14DB2979005D5D37 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
+		7DDB5F39153485A60054C479 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "Launchpad-Control/it.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +227,7 @@
 				7D1D8F7E14D9F24400EC82BA /* LaunchpadControl.xib in Resources */,
 				7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */,
 				7D35EDA414F16A0B0082BF18 /* LaunchpadControl.xib in Resources */,
+				7DDB5F3A153485A60054C479 /* LaunchpadControl.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +262,7 @@
 			children = (
 				7D1D8F8214D9F2A500EC82BA /* en */,
 				7D1D8F8414D9F2AB00EC82BA /* de */,
+				7DDB5F39153485A60054C479 /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
