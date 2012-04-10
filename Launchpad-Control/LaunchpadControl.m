@@ -809,6 +809,8 @@ static id _shared = nil;
 						   alternateButton:nil
 							   otherButton:nil 
 				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please see http://chaosspace.de/launchpad-control/faq/"),[plistPath stringByAppendingPathComponent:plistFileName]] runModal];
+		}else{
+			[[NSFileManager defaultManager] removeItemAtPath:databasePath error:nil];
 		}
 		
 		[self restartDock];
