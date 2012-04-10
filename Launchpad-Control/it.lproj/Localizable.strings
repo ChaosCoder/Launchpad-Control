@@ -1,0 +1,87 @@
+/* 
+  Localizable.strings
+  Launchpad-Control
+
+  Created by Andreas Ganske on 12.08.11.
+  Copyright 2011 Andreas Ganske. All rights reserved.
+*/
+
+// Common
+
+"Are you sure?"="Sei sicuro?";
+"Yes"="Si";
+"No"="No";
+"Okay"="OK";
+"Cancel"="Cancella";
+"Apply"="Applica";
+"Refresh"="Aggiorna";
+"Quit"="Esci";
+"Download"="Download";
+"Later"="Dopo";
+"Reset"="Reset Database";
+"Error"="Errore";
+"Help"="Aiuto";
+"All items"="Tutto";
+"Sort all items A-Z"="Disponi in ordine A-Z";
+"Selected item"="Elementi Selezionati";
+"Rename"="Rinomina";
+"Sort children A-Z"="Ordine A-Z del gruppo";
+"Database"="Database";
+"Backup"="Backup";
+"Restore"="Ripristna da Backup";
+
+// UI
+
+"This app allows you to easily hide/unhide and reorder apps in Launchpad.~nFor detailed instructions please click the 'Help'-button at the top."="Questa applicazione vi permetterà in maniera semplicissima di nascondere, visualizzare, spostare e creare cartelle  con le app del Launchpad";
+"Footer"="Usatela a Vostro rischio. | © Andreas Ganske";
+
+// Special dialogs
+
+"Get v%@ now!"="Scarica ora!";
+"New version of Launchpad-Control available!"="Una nova version di Launchpad-Control è disponibile!";
+"Version %@ of Launchpad-Control is available (You have %@). You can download it now or later by clicking on the button at the top."="La versione %@ di Launchpad-Control è disponibile (Tu hai %@). Puoi scaricarla adesso o quando vuoi premendo il pulsate in alto.";
+"A full reset will remove the database file used by Launchpad. Launchpad will then create a new database. Any custom groups or manually added apps will be gone."="Un reset completo rimuoverà il file del database usato da Launchpad. Ogni gruppo creato dall'utente ed ogni app aggiunta manualmente sarà cancellata.";
+
+"Do you want Launchpad-Control to load the new database?"="Vuoi davvero che  Launchpad-Control carichi il nuovo database?";
+"If you want to edit your database click 'Yes'. Click 'No' if you don't want Launchpad-Control to load and edit your new database. Launchpad-Control will then close itself."="Se vuoi modificare il tuo database clicca 'SI', altrimenti clicca 'No' se non vuoi che Launchpad-Control carichi e modifichi il tuo nuovo database. Launchpad-Control si chiuderà automaticamente.";
+"Refreshing database…"="Sto aggiornando il database...";
+"Please wait while Launchpad refreshes its database. \nOnce it is done click 'OK'. Launchpad-Control will then reload the new database."="Attendi che Launchpad aggiorni il suo database. \nQuando ha finito clicca 'OK'. Launchpad-Control ricaricherà il nuovo database.";
+"Please wait while Launchpad refreshes its database. \nOnce it is done click 'Refresh'. If this error still exists after some minutes press 'Quit'."="Attendi che Launchpad aggiorni il suo database. \nQuando ha finito clicca 'Aggiorna'. Se questo errore  persiste dopo alcuni minuti premi 'Esci'.";
+"Unsaved changes!"="Modifiche non salvate!";
+"You seem to have made changes but you have not applied them. A refresh will undo these changes. \nWhat do you want to do?"="Non hai ancora salvato le modifiche. Aggiornando perderai tutto quello che non hai salvato. \nSicuro di voler continuare?";
+// ETC
+
+"PAGE"="Pagina";
+"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control"="http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control";
+
+// Exceptions
+
+"Could not find any database file for Launchpad."="Nessun file del database di Launchpad rilevato.";
+"Could not backup original Launchpad database.~nBe careful!"="Non stai salvando il database originale di Launchpad.~nAttento!";
+"Could not open the database file for Launchpad."="Non riesco ad aprire il database di Launchpad.";
+"Corrupt database detected!"="Ho individuato un database corrotto!";
+"Your database file seems to be corrupt. A Launchpad-Control version prior 1.2 could have done that.\nYou have to do a full reset of your database to use this new version of Launchpad-Control. Any custom groups or manually added apps will be gone."="Il tuo file del database sembra essere corrotto o potrebbe essere stato creato con una versione di  Launchpad-Control inferiore alla 1.2.\nE' necessario eseguire un reset completo del tuo database per poter utilizzare questa nuova versione di Launchpad-Control. Tutte le cartelle create dall'utente o le app inserire manualmente andrano perdute.";
+
+// Drag'n'Drop
+
+"group"="gruppo";
+"page"="pagina";
+
+"Empty %@!"="Vuoto %@!";
+"You've got the empty %@ '%@' because you moved the only item '%@' out of it. Would you like to remove the %@ from Launchpad?"="Hai svuotato %@ '%@' perchè hai tolto l'unica app '%@' che c'era; Vuoi rimuovere %@ da Launchpad?";
+"You are about to merge two apps:\n\n• %@\n• %@\n\nPlease type in the name of this new group:"="Stai per unire due apps:\n\n• %@\n• %@\n\nDigita il nome del gruppo:";
+
+// Backup and restore
+
+"There was an error backupping the database:\n\nError Code: %@\nDescription: %@"="E' stato rilevato un errore eseguendo il backup del database:\n\nError Code: %@\nDescription: %@";
+"Backup successfully"="Backup eseguito correttamente";
+"The backup was successfully created and saved."="Il backup è stato creato e salvato correttamente.";
+
+"There was an error restoring the database:\n\nError Code: %@\nDescription: %@"="E' stato rilevato un errore ripristinado il database:\n\nError Code: %@\nDescription: %@";
+"You have to grant this application admin rights to be able to restore the database."="Devi possedere i diritti di amministratore per ripristinare il database.";
+
+"Restore successfully"="Ripristino eseguito correttamente";
+"The database was successfully restored and loaded."="Il database è stato ripristinato e caricato correttamente.";
+
+"Couln't hide/unhide the item '%@'. Permission denied?"="Non riesco a Mostrare/Nascondere l'app '%@'. E' richiesta una password amministrator vper eseguire questa operazione";
+"You are about to rename '%@'.\nPlease type in the new name:"="Stai rinominando '%@'.\nDigita il nuovo nome:";
