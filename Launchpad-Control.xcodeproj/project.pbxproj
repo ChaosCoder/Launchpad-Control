@@ -14,6 +14,7 @@
 		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
 		7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1D8FB614D9FC9900EC82BA /* CCUtils.h */; };
 		7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1D8FB714D9FC9900EC82BA /* CCUtils.m */; };
+		7D268EA61535E875000D4571 /* Launchpad-Control.prefPane in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */; };
 		7D35EDA414F16A0B0082BF18 /* LaunchpadControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
 		7D5DAA5A13E1E9D800483A2F /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5913E1E9D800483A2F /* PreferencePanes.framework */; };
@@ -24,6 +25,19 @@
 		7D81203014DB2979005D5D37 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202E14DB2979005D5D37 /* Security.framework */; };
 		7D81203114DB2979005D5D37 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202F14DB2979005D5D37 /* SecurityInterface.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7D268EA51535E865000D4571 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /Users/ChaosCoder/Library/PreferencePanes;
+			dstSubfolderSpec = 0;
+			files = (
+				7D268EA61535E875000D4571 /* Launchpad-Control.prefPane in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7D0BCE0C13FC50CC00545108 /* Item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Item.h; sourceTree = "<group>"; };
@@ -179,6 +193,7 @@
 				7D5DAA5013E1E9D800483A2F /* Headers */,
 				7D5DAA5113E1E9D800483A2F /* Resources */,
 				7D5DAA5213E1E9D800483A2F /* Rez */,
+				7D268EA51535E865000D4571 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -322,6 +337,7 @@
 		7D5DAA7213E1E9D800483A2F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application: Andreas Ganske";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Launchpad-Control\"",
@@ -331,6 +347,7 @@
 				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = prefPane;
 			};
 			name = Debug;
@@ -338,6 +355,7 @@
 		7D5DAA7313E1E9D800483A2F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Developer ID Application: Andreas Ganske";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Launchpad-Control\"",
@@ -347,6 +365,7 @@
 				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = prefPane;
 			};
 			name = Release;

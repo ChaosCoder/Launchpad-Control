@@ -37,6 +37,7 @@ static NSString *plistBackupFileName = @"LaunchPadLayout.plist";
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources";
 static NSString *plistTemporaryPath = @"/tmp";
 static NSString *currentVersion;
+static NSString *updateURLString = @"http://chaosspace.de/download.php?id=Launchpad-Control";
 
 static NSInteger maximumItemsPerPage = 40;
 static NSInteger maximumItemsPerGroup = 32;
@@ -122,7 +123,8 @@ static id _shared = nil;
 -(IBAction)buttonPressed:(id)sender
 {
 	if (sender == updateButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
+		//[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
+		[self update];
 	}else if (sender == refreshButton) {
 		[self refreshDatabase];
 	}else if (sender == applyButton) {
@@ -198,7 +200,7 @@ static id _shared = nil;
 		[updateButton setTitle:[NSString stringWithFormat:CCLocalized(@"Get v%@ now!"),newVersionString]];
 		[updateButton setHidden:NO];
 		
-		if ([[NSAlert alertWithMessageText:CCLocalized(@"Get v%@ now!")
+		if ([[NSAlert alertWithMessageText:[NSString stringWithFormat:CCLocalized(@"Get v%@ now!"),newVersionString]
 							 defaultButton:CCLocalized(@"Download")
 						   alternateButton:CCLocalized(@"Later")
 							   otherButton:nil 
@@ -1197,9 +1199,23 @@ END;"];
 
 -(BOOL)moveFileWithRightsFrom:(NSString *)source to:(NSString *)destination
 {
+	return [self runCommandWithRights:[NSString stringWithFormat:@" mv -f \"%@\" \"%@\"",source,destination]];
+}
+
+-(void)runCommand:(NSString *)command withArguments:(NSArray *)arguments
+{
+	NSTask *task = [[NSTask alloc] init];
+	[task setLaunchPath:command];
+	[task setArguments:arguments];
+	[task launch];
+	[task waitUntilExit];
+}
+
+-(BOOL)runCommandWithRights:(NSString *)command
+{
 	NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-c"];
-	[args addObject:[NSString stringWithFormat:@" mv -f \"%@\" \"%@\"",source,destination]];
+	[args addObject:command];
 	// Convert array into void-* array.
 	const char **argv = (const char **)malloc(sizeof(char *) * [args count] + 1);
 	int argvIndex = 0;
@@ -1238,6 +1254,16 @@ END;"];
 	} else {
 		return nil;
 	}
+}
+
+-(void)update
+{
+	NSURL *remoteURL = [NSURL URLWithString:updateURLString];
+	NSString *temporaryZipPath = [plistTemporaryPath stringByAppendingPathComponent:@"Launchpad-Control.zip"];
+	[[NSData dataWithContentsOfURL:remoteURL] writeToFile:temporaryZipPath atomically:TRUE];
+	
+	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-q", [NSString stringWithFormat:@"\"%@\"", temporaryZipPath], @"\"/tmp/Launchpad-Control.prefPane\"", nil]];
+	[[NSWorkspace sharedWorkspace] openFile:@"/tmp/Launchpad-Control.prefPane"];
 }
 
 @end
