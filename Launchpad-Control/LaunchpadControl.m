@@ -1260,7 +1260,7 @@ END;"];
 	NSString *temporaryZipPath = [plistTemporaryPath stringByAppendingPathComponent:@"Launchpad-Control.zip"];
 	[[NSData dataWithContentsOfURL:remoteURL] writeToFile:temporaryZipPath atomically:TRUE];
 	
-	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-q", [NSString stringWithFormat:@"\"%@\"", temporaryZipPath], @"\"/tmp/Launchpad-Control.prefPane\"", nil]];
+	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-qfo", [NSString stringWithFormat:@"\"%@\"", temporaryZipPath], nil]];
 	[[NSWorkspace sharedWorkspace] openFile:@"/tmp/Launchpad-Control.prefPane"];
 }
 
