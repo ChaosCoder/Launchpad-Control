@@ -3,12 +3,12 @@
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
 		<string key="IBDocument.SystemVersion">11D50b</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
 		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2177</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSScroller</string>
@@ -453,34 +453,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<reference key="NSContentView" ref="549480046"/>
 							<bytes key="NSScrollAmts">AAAAAEEgAABBkAAAQZAAAA</bytes>
 						</object>
-						<object class="NSButton" id="98611957">
-							<reference key="NSNextResponder" ref="1037298196"/>
-							<int key="NSvFlags">265</int>
-							<string key="NSFrame">{{557, 396}, {48, 48}}</string>
-							<reference key="NSSuperview" ref="1037298196"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="411670740"/>
-							<string key="NSReuseIdentifierKey">_NS:2510</string>
-							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="495496213">
-								<int key="NSCellFlags">67108864</int>
-								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents"/>
-								<reference key="NSSupport" ref="188501509"/>
-								<string key="NSCellIdentifier">_NS:2510</string>
-								<reference key="NSControlView" ref="98611957"/>
-								<int key="NSButtonFlags">-2042347520</int>
-								<int key="NSButtonFlags2">134</int>
-								<object class="NSCustomResource" key="NSNormalImage">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">twitter</string>
-								</object>
-								<string key="NSAlternateContents"/>
-								<string key="NSKeyEquivalent"/>
-								<int key="NSPeriodicDelay">400</int>
-								<int key="NSPeriodicInterval">75</int>
-							</object>
-						</object>
 						<object class="NSButton" id="883539811">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
@@ -604,10 +576,10 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<object class="NSButton" id="368903325">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{464, 422}, {25, 25}}</string>
+							<string key="NSFrame">{{573, 424}, {25, 25}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="98611957"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:3976</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="509692593">
@@ -628,7 +600,7 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<object class="NSTextField" id="88778508">
 							<reference key="NSNextResponder" ref="1037298196"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{415, 428}, {49, 17}}</string>
+							<string key="NSFrame">{{524, 430}, {49, 17}}</string>
 							<reference key="NSSuperview" ref="1037298196"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="515152489"/>
@@ -739,14 +711,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 					<object class="IBActionConnection" key="connection">
 						<string key="label">buttonPressed:</string>
 						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="98611957"/>
-					</object>
-					<int key="connectionID">282</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">buttonPressed:</string>
-						<reference key="source" ref="294453543"/>
 						<reference key="destination" ref="411670740"/>
 					</object>
 					<int key="connectionID">283</int>
@@ -846,14 +810,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<reference key="destination" ref="46250304"/>
 					</object>
 					<int key="connectionID">297</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">tweetButton</string>
-						<reference key="source" ref="294453543"/>
-						<reference key="destination" ref="98611957"/>
-					</object>
-					<int key="connectionID">300</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1052,7 +1008,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<reference ref="411670740"/>
 							<reference ref="515152489"/>
 							<reference ref="438570260"/>
-							<reference ref="98611957"/>
 							<reference ref="762516816"/>
 							<reference ref="407734797"/>
 							<reference ref="431218832"/>
@@ -1068,9 +1023,9 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<reference ref="523350743"/>
 							<reference ref="386800219"/>
 							<reference ref="746120867"/>
-							<reference ref="88778508"/>
-							<reference ref="368903325"/>
 							<reference ref="819493985"/>
+							<reference ref="368903325"/>
+							<reference ref="88778508"/>
 						</array>
 						<reference key="parent" ref="660800786"/>
 					</object>
@@ -1240,19 +1195,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<reference key="parent" ref="46250304"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">261</int>
-						<reference key="object" ref="98611957"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="495496213"/>
-						</array>
-						<reference key="parent" ref="1037298196"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">262</int>
-						<reference key="object" ref="495496213"/>
-						<reference key="parent" ref="98611957"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">267</int>
 						<reference key="object" ref="1038753768"/>
 						<reference key="parent" ref="1037298196"/>
@@ -1420,8 +1362,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 				<string key="240.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="247.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="248.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="261.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="262.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="267.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="269.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="270.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1488,7 +1428,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 						<string key="sortAllButton">NSButton</string>
 						<string key="sortItemButton">NSButton</string>
 						<string key="titleFieldCell">NSTextFieldCell</string>
-						<string key="tweetButton">NSButton</string>
 						<string key="updateButton">NSButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -1572,10 +1511,6 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 							<string key="name">titleFieldCell</string>
 							<string key="candidateClassName">NSTextFieldCell</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="tweetButton">
-							<string key="name">tweetButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="updateButton">
 							<string key="name">updateButton</string>
 							<string key="candidateClassName">NSButton</string>
@@ -1640,9 +1575,9 @@ bHAiLWJ1dHRvbiBhdCB0aGUgdG9wLg</string>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="donate">{64, 64}</string>
-			<string key="twitter">{48, 48}</string>
-		</dictionary>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">donate</string>
+			<string key="NS.object.0">{64, 64}</string>
+		</object>
 	</data>
 </archive>

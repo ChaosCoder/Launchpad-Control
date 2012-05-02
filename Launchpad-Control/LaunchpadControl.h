@@ -53,7 +53,6 @@
 #pragma mark - Outlets - Buttons
 @property (nonatomic, weak) IBOutlet NSButton *updateButton;
 @property (nonatomic, weak) IBOutlet NSButton *helpButton;
-@property (nonatomic, weak) IBOutlet NSButton *tweetButton;
 @property (nonatomic, weak) IBOutlet NSButton *donateButton;
 
 @property (nonatomic, weak) IBOutlet NSButton *applyButton;

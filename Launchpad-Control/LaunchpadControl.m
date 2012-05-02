@@ -28,7 +28,7 @@
 @synthesize helpFieldCell;
 @synthesize helpButton;
 
-@synthesize outlineView, donateButton, tweetButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
+@synthesize outlineView, donateButton, updateButton, resetDatabaseButton, refreshButton, applyButton, currentVersionField, descriptionFieldCell;
 
 static NSString *zipContentsPath = @"/tmp/lcbackup/";
 static NSString *databaseFileName = @"database.db";
@@ -133,8 +133,6 @@ static id _shared = nil;
 		[self removeDatabase];
 	}else if (sender == donateButton) {
 		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
-	}else if (sender == tweetButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:CCLocalized(@"http://twitter.com/home?status=Clean%20up%20your%20Launchpad!%20Check%20out%20Launchpad-Control%20http%3A%2F%2Fchaosspace.de%2Flaunchpad-control")]];
 	}else if (sender == backupDatabaseButton) {
 		[self backupDatabase];
 	}else if (sender == restoreDatabaseButton) {
