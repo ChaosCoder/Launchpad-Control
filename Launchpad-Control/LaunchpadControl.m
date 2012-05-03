@@ -1065,9 +1065,35 @@ END;"];
 
 -(void)sortAllItems
 {
+	/*
 	for (Item *item in [rootItem children]) {
 		[item sortChildrenAlphabetically:YES];
 	}
+	[self reload];
+	 */
+	
+	NSMutableArray *appsAndGroups = [[NSMutableArray alloc] initWithCapacity:[items count]];
+	for (Item *item in items) {
+		if (([item type] == kItemApp || [item type] == kItemGroup) && [[item parent] type] == kItemPage) {
+			[appsAndGroups addObject:item];
+		}
+	}
+	
+	NSSortDescriptor* sortOrder = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)] autorelease];
+	[appsAndGroups sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
+	
+	int currentPage = 0;
+	for (int i=0; i<[appsAndGroups count]; i++) 
+	{
+		Item *item = [appsAndGroups objectAtIndex:i];
+		[item setOrdering:i%40 updateDatabase:YES];
+		[item setParent:[[rootItem children] objectAtIndex:currentPage] updateDatabase:YES];
+		
+		if (i%40==39) {
+			currentPage++;
+		}
+	}
+	
 	[self reload];
 }
 
