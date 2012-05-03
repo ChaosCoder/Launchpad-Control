@@ -1079,17 +1079,18 @@ END;"];
 		}
 	}
 	
-	NSSortDescriptor* sortOrder = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)] autorelease];
+	NSSortDescriptor* sortOrder = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedStandardCompare:)] autorelease];
 	[appsAndGroups sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
 	
 	int currentPage = 0;
 	for (int i=0; i<[appsAndGroups count]; i++) 
 	{
 		Item *item = [appsAndGroups objectAtIndex:i];
-		[item setOrdering:i%40 updateDatabase:YES];
-		[item setParent:[[rootItem children] objectAtIndex:currentPage] updateDatabase:YES];
 		
-		if (i%40==39) {
+		[item setParent:[[rootItem children] objectAtIndex:currentPage] updateDatabase:YES];
+		[item setOrdering:i%maximumItemsPerPage updateDatabase:YES];
+		
+		if (i%maximumItemsPerPage==maximumItemsPerPage-1) {
 			currentPage++;
 		}
 	}
@@ -1286,7 +1287,9 @@ END;"];
 	NSString *temporaryZipPath = [plistTemporaryPath stringByAppendingPathComponent:@"Launchpad-Control.zip"];
 	[[NSData dataWithContentsOfURL:remoteURL] writeToFile:temporaryZipPath atomically:TRUE];
 	
-	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-qfo", [NSString stringWithFormat:@"\"%@\"", temporaryZipPath], nil]];
+	sleep(1);
+	
+	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-qo", [NSString stringWithFormat:@"%@", temporaryZipPath], @"-d /tmp/", nil]];
 	[[NSWorkspace sharedWorkspace] openFile:@"/tmp/Launchpad-Control.prefPane"];
 }
 
