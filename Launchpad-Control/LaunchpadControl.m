@@ -13,7 +13,7 @@
 @implementation LaunchpadControl
 
 static NSString *zipContentsPath = @"/tmp/lcbackup/";
-static NSString *databaseFileName = @"database.db";
+static NSString *databaseFileName = @"db";
 static NSString *plistFileName = @"LaunchPadLayout.plist";
 static NSString *plistBackupFileName = @"LaunchPadLayout.plist";
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources";
@@ -46,7 +46,8 @@ static id _shared = nil;
 
 -(void)mainViewDidLoad
 {
-	self.databaseDirectoryPath = [@"~/Library/Application Support/Dock/" stringByStandardizingPath];
+    self.databaseDirectoryPath = [self findLaunchpadDatabase];
+    
 	currentVersion = [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey:@"CFBundleVersion"];
 	[self.outlineView registerForDraggedTypes:[NSArray arrayWithObject:MyPrivateTableViewDataType]];
 	
@@ -77,6 +78,24 @@ static id _shared = nil;
 	[self reload];
 	
 	[self performSelector:@selector(checkForUpdates) withObject:nil afterDelay:3.0f];
+}
+
+- (NSString *)findLaunchpadDatabase
+{
+    NSPipe *pipe = [NSPipe pipe];
+    
+    NSTask *task = [NSTask new];
+    [task setLaunchPath:@"/bin/sh"];
+    [task setArguments:@[ @"-c", @"find /private/var/folders -type d -name com.apple.dock.launchpad"]];
+    [task setStandardOutput:pipe];
+    
+    NSFileHandle *fileHandleForReading = [pipe fileHandleForReading];
+    [task launch];
+    [task waitUntilExit];
+    
+    NSData *result = [fileHandleForReading readDataToEndOfFile];
+    NSString *output = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+    return [[output substringToIndex:output.length - 1] stringByAppendingPathComponent:@"db"];
 }
 
 -(void)setupRights
@@ -413,43 +432,35 @@ static id _shared = nil;
 		
 		
 		//check if file is already there
-		for (NSString *fileName in files) {
-			if ([[fileName pathExtension] isEqualToString:@"db"]) {
-				
-				self.databasePath = [directory stringByAppendingPathComponent:fileName];
-				self.databaseBackupPath = [self.databasePath stringByAppendingPathExtension:@"backup"];
-				
-				if (![fileManager fileExistsAtPath:self.databaseBackupPath]){
-					[fileManager copyItemAtPath:self.databasePath toPath:self.databaseBackupPath error:&error];
-					
-				}
-				
-				if (error)
-					[NSException raise:@"CouldNotCreateBackupException" format:@"%@", CCLocalized(@"Could not backup original Launchpad database.~nBe careful!")];
-				
-				if([fileManager fileExistsAtPath:self.databasePath])
-				{
-                    sqlite3 *db = self.db;
-					if(sqlite3_open([self.databasePath UTF8String], &db) == SQLITE_OK)
-					{
-                        self.db = db;
-						self.dbOpened = YES;
-						NSString *databaseVersion = [self getDatabaseVersion];
-						if ([databaseVersion floatValue]>[currentVersion floatValue] && [[NSAlert alertWithMessageText:CCLocalized(@"Error") defaultButton:CCLocalized(@"Yes") alternateButton:@"No" otherButton:nil informativeTextWithFormat:@"%@", CCLocalized(@"The database was modified with a newer version from Launchpad-Control. Downgrading to an older version could result in massive bugs.\n\nDo you really want to load the database?")] runModal]) {
-							return YES;
-						}
-						if (![databaseVersion isEqualToString:currentVersion]) {
-							[self migrateFrom:databaseVersion];
-						}
-						return YES;
-					}
-				}
-				
-				[NSException raise:@"CannotOpenDatabaseException" format:@"%@", CCLocalized(@"Could not open the database file for Launchpad.")];
-			}
-		}
-		
-		[NSException raise:@"DatabaseNotFoundException" format:@"%@", CCLocalized(@"Could not find any database file for Launchpad.")];
+		self.databasePath = [directory stringByAppendingPathComponent:databaseFileName];
+        self.databaseBackupPath = [self.databasePath stringByAppendingPathExtension:@"backup"];
+        
+        if (![fileManager fileExistsAtPath:self.databaseBackupPath]) {
+            [fileManager copyItemAtPath:self.databasePath toPath:self.databaseBackupPath error:&error];
+        }
+        
+        if (error)
+            [NSException raise:@"CouldNotCreateBackupException" format:@"%@", CCLocalized(@"Could not backup original Launchpad database.~nBe careful!")];
+        
+        if([fileManager fileExistsAtPath:self.databasePath])
+        {
+            sqlite3 *db = self.db;
+            if(sqlite3_open([self.databasePath UTF8String], &db) == SQLITE_OK)
+            {
+                self.db = db;
+                self.dbOpened = YES;
+                NSString *databaseVersion = [self getDatabaseVersion];
+                if ([databaseVersion floatValue]>[currentVersion floatValue] && [[NSAlert alertWithMessageText:CCLocalized(@"Error") defaultButton:CCLocalized(@"Yes") alternateButton:@"No" otherButton:nil informativeTextWithFormat:@"%@", CCLocalized(@"The database was modified with a newer version from Launchpad-Control. Downgrading to an older version could result in massive bugs.\n\nDo you really want to load the database?")] runModal]) {
+                    return YES;
+                }
+                if (![databaseVersion isEqualToString:currentVersion]) {
+                    [self migrateFrom:databaseVersion];
+                }
+                return YES;
+            }
+        }
+        
+        [NSException raise:@"CannotOpenDatabaseException" format:@"%@", CCLocalized(@"Could not open the database file for Launchpad.")];
 	}
 	@catch (NSException *exception) {
 		[[NSAlert alertWithMessageText:CCLocalized(@"Error") defaultButton:CCLocalized(@"Okay") alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", [exception reason]] runModal];

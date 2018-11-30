@@ -12,8 +12,6 @@
 		7D0D236113F6D10400A2A1FE /* donate.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D235F13F6D10400A2A1FE /* donate.png */; };
 		7D0D236313F6F5BB00A2A1FE /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7D0D236213F6F5BB00A2A1FE /* Icon.icns */; };
 		7D1D8F8314D9F2A500EC82BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F8114D9F2A500EC82BA /* Localizable.strings */; };
-		7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D1D8FB614D9FC9900EC82BA /* CCUtils.h */; };
-		7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1D8FB714D9FC9900EC82BA /* CCUtils.m */; };
 		7D268EA61535E875000D4571 /* Launchpad-Control.prefPane in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */; };
 		7D35EDA414F16A0B0082BF18 /* LaunchpadControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */; };
 		7D5DAA5813E1E9D800483A2F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA5713E1E9D800483A2F /* Cocoa.framework */; };
@@ -23,6 +21,8 @@
 		7D5DAA7813E1EB4500483A2F /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5DAA7613E1EB3E00483A2F /* libsqlite3.0.dylib */; };
 		7D81203014DB2979005D5D37 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202E14DB2979005D5D37 /* Security.framework */; };
 		7D81203114DB2979005D5D37 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D81202F14DB2979005D5D37 /* SecurityInterface.framework */; };
+		7DDDB69F21B1F4030021C805 /* CCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7DDDB69D21B1F4030021C805 /* CCUtils.h */; };
+		7DDDB6A021B1F4030021C805 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DDDB69E21B1F4030021C805 /* CCUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,8 +46,6 @@
 		7D1D8F7D14D9F24400EC82BA /* LaunchpadControl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchpadControl.xib; path = "Launchpad-Control/LaunchpadControl.xib"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8214D9F2A500EC82BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "Launchpad-Control/en.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
 		7D1D8F8414D9F2AB00EC82BA /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = "Launchpad-Control/de.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
-		7D1D8FB614D9FC9900EC82BA /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
-		7D1D8FB714D9FC9900EC82BA /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
 		7D268E9515349CBD000D4571 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
 		7D5DAA5413E1E9D800483A2F /* Launchpad-Control.prefPane */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Launchpad-Control.prefPane"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D5DAA5713E1E9D800483A2F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -63,6 +61,8 @@
 		7D81202E14DB2979005D5D37 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		7D81202F14DB2979005D5D37 /* SecurityInterface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityInterface.framework; path = System/Library/Frameworks/SecurityInterface.framework; sourceTree = SDKROOT; };
 		7DDB5F39153485A60054C479 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = "Launchpad-Control/it.lproj/Localizable.strings"; sourceTree = SOURCE_ROOT; };
+		7DDDB69D21B1F4030021C805 /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
+		7DDDB69E21B1F4030021C805 /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,27 +92,9 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		7D1D8FB414D9FC9900EC82BA /* Externals */ = {
-			isa = PBXGroup;
-			children = (
-				7D1D8FB514D9FC9900EC82BA /* CCLibrary */,
-			);
-			path = Externals;
-			sourceTree = "<group>";
-		};
-		7D1D8FB514D9FC9900EC82BA /* CCLibrary */ = {
-			isa = PBXGroup;
-			children = (
-				7D1D8FB614D9FC9900EC82BA /* CCUtils.h */,
-				7D1D8FB714D9FC9900EC82BA /* CCUtils.m */,
-			);
-			path = CCLibrary;
-			sourceTree = "<group>";
-		};
 		7D5DAA4713E1E9D700483A2F = {
 			isa = PBXGroup;
 			children = (
-				7D1D8FB414D9FC9900EC82BA /* Externals */,
 				7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */,
 				7D5DAA5613E1E9D800483A2F /* Frameworks */,
 				7D5DAA5513E1E9D800483A2F /* Products */,
@@ -145,6 +127,7 @@
 		7D5DAA5F13E1E9D800483A2F /* Launchpad-Control */ = {
 			isa = PBXGroup;
 			children = (
+				7DDDB6A121B1F4090021C805 /* Helper */,
 				7D5DAA6613E1E9D800483A2F /* LaunchpadControl.h */,
 				7D5DAA6813E1E9D800483A2F /* LaunchpadControl.m */,
 				7D0BCE0C13FC50CC00545108 /* Item.h */,
@@ -165,6 +148,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7DDDB6A121B1F4090021C805 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				7DDDB69D21B1F4030021C805 /* CCUtils.h */,
+				7DDDB69E21B1F4030021C805 /* CCUtils.m */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -172,9 +164,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DDDB69F21B1F4030021C805 /* CCUtils.h in Headers */,
 				7D5DAA6713E1E9D800483A2F /* LaunchpadControl.h in Headers */,
 				7D0BCE0E13FC50CC00545108 /* Item.h in Headers */,
-				7D1D8FB814D9FC9900EC82BA /* CCUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +199,7 @@
 		7D5DAA4913E1E9D800483A2F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 1010;
 			};
 			buildConfigurationList = 7D5DAA4C13E1E9D800483A2F /* Build configuration list for PBXProject "Launchpad-Control" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -257,9 +249,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DDDB6A021B1F4030021C805 /* CCUtils.m in Sources */,
 				7D5DAA6913E1E9D800483A2F /* LaunchpadControl.m in Sources */,
 				7D0BCE0F13FC50CC00545108 /* Item.m in Sources */,
-				7D1D8FB914D9FC9900EC82BA /* CCUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,12 +275,32 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -299,6 +311,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
@@ -310,16 +325,38 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
@@ -341,6 +378,7 @@
 				GCC_PREFIX_HEADER = "Launchpad-Control/Prefix.pch";
 				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.chaosspace.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -363,6 +401,7 @@
 				GCC_PREFIX_HEADER = "Launchpad-Control/Prefix.pch";
 				INFOPLIST_FILE = "Launchpad-Control/Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/PreferencePanes";
+				PRODUCT_BUNDLE_IDENTIFIER = "de.chaosspace.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
