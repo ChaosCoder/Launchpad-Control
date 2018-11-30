@@ -12,30 +12,26 @@
 
 @class Item;
 
-@interface LaunchpadControl : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate> 
-{
-	Item *rootItem;
-	NSMutableArray *items;
-	
-	Item *draggedItem;
-	
-	sqlite3 *db;
-	NSString *databaseDirectoryPath;
-	NSString *databasePath;
-	NSString *databaseBackupPath;
-	
-	BOOL dbOpened;
-	BOOL changedData;
-	
-	NSMutableDictionary *plist;
-	NSMutableArray *ignoredBundles;
-	
-	NSMutableData *receivedData;
-}
+@interface LaunchpadControl : NSPreferencePane <NSOutlineViewDataSource,NSOutlineViewDelegate>
 
-@property (nonatomic, strong) NSString *databaseDirectoryPath;
-@property (nonatomic, strong) NSString *databasePath;
-@property (nonatomic, strong) NSString *databaseBackupPath;
+@property (nonatomic, strong) Item *rootItem;
+
+@property (nonatomic, strong) NSMutableArray *items;
+@property (nonatomic, strong) Item *draggedItem;
+
+@property (nonatomic, assign) sqlite3 *db;
+
+@property (nonatomic, copy) NSString *databaseDirectoryPath;
+@property (nonatomic, copy) NSString *databasePath;
+@property (nonatomic, copy) NSString *databaseBackupPath;
+
+@property (nonatomic, assign) BOOL dbOpened;
+@property (nonatomic, assign) BOOL changedData;
+
+@property (nonatomic, strong) NSMutableDictionary *plist;
+@property (nonatomic, strong) NSMutableArray *ignoredBundles;
+
+@property (nonatomic, strong) NSMutableData *receivedData;
 
 #pragma mark - Properties
 #pragma mark - Outlets - Labels

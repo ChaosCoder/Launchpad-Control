@@ -11,18 +11,6 @@
 
 @implementation Item
 
-@synthesize identifier = _identifier;
-
-@synthesize name = _name;
-@synthesize parent = _parent;
-@synthesize uuid = _uuid;
-@synthesize flags = _flags;
-@synthesize type = _type;
-@synthesize ordering = _ordering;
-@synthesize visible = _visible;
-@synthesize bundleIdentifier = _bundleIdentifier;
-@synthesize children;
-
 int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(id)initWithID:(NSInteger)anIdentifier name:(NSString *)aName parent:(Item *)aParent uuid:(NSString *)anUUID flags:(Byte)aFlags type:(Byte)aType ordering:(NSInteger)anOrdering visible:(BOOL)isVisible
@@ -51,14 +39,14 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(void)setName:(NSString *)aName updateDatabase:(BOOL)updateDatabase
 {
-	_name = [aName retain];
+    _name = aName;
 	
 	if (updateDatabase) {
 		NSString *sqlString = nil;
 		if (_type == kItemApp) {
-			sqlString = [NSString stringWithFormat:@"UPDATE apps SET title='%@' WHERE item_id=%i",_name,_identifier];
+            sqlString = [NSString stringWithFormat:@"UPDATE apps SET title='%@' WHERE item_id=%li",_name,(long)_identifier];
 		}else if(_type == kItemGroup) {
-			sqlString = [NSString stringWithFormat:@"UPDATE groups SET title='%@' WHERE item_id=%i",_name,_identifier];
+            sqlString = [NSString stringWithFormat:@"UPDATE groups SET title='%@' WHERE item_id=%li",_name,(long)_identifier];
 		}
 		
 		if (sqlString)
@@ -82,7 +70,7 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 		}
 		
 		if (success) {
-			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET rowid = %i WHERE ABS(rowid) = %i", _identifier * (isVisible ? 1 : -1), _identifier];
+            NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET rowid = %li WHERE ABS(rowid) = %li", _identifier * (isVisible ? 1 : -1), (long)_identifier];
 			[[LaunchpadControl shared] executeSQL:sqlQuery];
 			
 			_visible = isVisible;
@@ -106,7 +94,7 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 	_ordering = anOrdering;
 	
 	if (updateDatabase) {
-		NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET ordering = %i WHERE ABS(rowid) = %i;", self.ordering, self.identifier];
+        NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET ordering = %li WHERE ABS(rowid) = %li;", (long)self.ordering, (long)self.identifier];
 		[[LaunchpadControl shared] executeSQL:sqlQuery];
 	}
 }
@@ -124,14 +112,14 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 	if (_parent)
 		[_parent removeChild:self];
 	
-	[_parent release];
+    _parent = nil;
 	
 	if (aParent) {
-		_parent = [aParent retain];
+        _parent = aParent;
 		[_parent addChild:self];
 		
 		if (updateDatabase) {
-			NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET parent_id = %i WHERE ABS(rowid) = %i;", [self.parent identifier], self.identifier];
+            NSString *sqlQuery = [NSString stringWithFormat:@"UPDATE items SET parent_id = %li WHERE ABS(rowid) = %li;", (long)[self.parent identifier], (long)self.identifier];
 			[[LaunchpadControl shared] executeSQL:sqlQuery];
 		}
 	}
@@ -145,12 +133,12 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(void)sortChildrenAlphabetically:(BOOL)recursive
 {
-	if ([children count]>0) {
-		NSSortDescriptor* sortOrder = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)] autorelease];
+	if ([self.children count]>0) {
+		NSSortDescriptor* sortOrder = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
 		[self.children sortUsingDescriptors:[NSArray arrayWithObject: sortOrder]];
 		
 		int i = 0;
-		for (Item *child in children) 
+		for (Item *child in self.children)
 		{
 			[child setOrdering:i updateDatabase:YES];
 			i++;
@@ -163,12 +151,12 @@ int signum(int n) { return (n < 0) ? -1 : (n > 0) ? +1 : 0; }
 
 -(void)addChild:(Item *)item
 {
-	[children addObject:item];
+	[self.children addObject:item];
 }
 
 -(void)removeChild:(Item *)item
 {
-	[children removeObject:item];
+	[self.children removeObject:item];
 }
 
 -(NSString *)description
