@@ -1257,14 +1257,7 @@ END;"];
 
 -(void)update
 {
-	NSURL *remoteURL = [NSURL URLWithString:updateURLString];
-	NSString *temporaryZipPath = [plistTemporaryPath stringByAppendingPathComponent:@"Launchpad-Control.zip"];
-	[[NSData dataWithContentsOfURL:remoteURL] writeToFile:temporaryZipPath atomically:TRUE];
-	
-	sleep(1);
-	
-	[self runCommand:@"/usr/bin/unzip" withArguments:[NSArray arrayWithObjects:@"-qo", [NSString stringWithFormat:@"%@", temporaryZipPath], @"-d /tmp/", nil]];
-	[[NSWorkspace sharedWorkspace] openFile:@"/tmp/Launchpad-Control.prefPane"];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://chaosspace.de/launchpad-control/update"]];
 }
 
 @end
