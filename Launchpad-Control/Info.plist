@@ -19,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>1.64</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2012 Andreas Ganske. All rights reserved.</string>
+	<string>Copyright © 2018 Andreas Ganske. All rights reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>LaunchpadControl</string>
 	<key>NSPrefPaneIconFile</key>

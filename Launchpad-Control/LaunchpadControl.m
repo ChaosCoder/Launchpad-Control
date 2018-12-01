@@ -19,7 +19,7 @@ static NSString *plistBackupFileName = @"LaunchPadLayout.plist";
 static NSString *plistPath = @"/System/Library/CoreServices/Dock.app/Contents/Resources";
 static NSString *plistTemporaryPath = @"/tmp";
 static NSString *currentVersion;
-static NSString *updateURLString = @"http://chaosspace.de/download.php?id=Launchpad-Control";
+static NSString *updateURLString = @"https://chaosspace.de/download.php?id=Launchpad-Control";
 
 static NSInteger maximumItemsPerPage = 40;
 static NSInteger maximumItemsPerGroup = 32;
@@ -124,7 +124,7 @@ static id _shared = nil;
 -(IBAction)buttonPressed:(id)sender
 {
 	if (sender == self.updateButton) {
-		//[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/update"]];
+		//[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://chaosspace.de/launchpad-control/update"]];
 		[self update];
 	}else if (sender == self.refreshButton) {
 		[self refreshDatabase];
@@ -133,7 +133,7 @@ static id _shared = nil;
 	}else if (sender == self.resetDatabaseButton) {
 		[self removeDatabase];
 	}else if (sender == self.donateButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CHBAEUQVBUYTL"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://chaosspace.de/launchpad-control/donate"]];
 	}else if (sender == self.backupDatabaseButton) {
 		[self backupDatabase];
 	}else if (sender == self.restoreDatabaseButton) {
@@ -145,7 +145,7 @@ static id _shared = nil;
 	}else if (sender == self.renameItemButton) {
 		[self renameSelectedItem];
 	}else if (sender == self.helpButton) {
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://chaosspace.de/launchpad-control/help"]];
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://chaosspace.de/launchpad-control/help"]];
 	}
 }
 
@@ -171,7 +171,7 @@ static id _shared = nil;
 
 -(void)checkForUpdates
 {
-	NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://chaosspace.de/server/launchpad-control/version"]
+	NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://chaosspace.de/server/launchpad-control/version"]
 											  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
 										  timeoutInterval:60.0];
 	// create the connection with the request
@@ -796,7 +796,7 @@ static id _shared = nil;
 							 defaultButton:CCLocalized(@"Okay") 
 						   alternateButton:nil
 							   otherButton:nil 
-				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please see http://chaosspace.de/launchpad-control/faq/"),[plistPath stringByAppendingPathComponent:plistFileName]] runModal];
+				 informativeTextWithFormat:CCLocalized(@"Could not reset the file %@. Please see https://chaosspace.de/launchpad-control/faq/"),[plistPath stringByAppendingPathComponent:plistFileName]] runModal];
 		}else{
 			[[NSFileManager defaultManager] removeItemAtPath:self.databasePath error:nil];
 		}
